@@ -1,319 +1,187 @@
-<div align="center">
-
-<!-- ANIMATED LOGO HEADER -->
-<img src="./public/favicon.svg" alt="MajorMind Logo" width="180" height="180" />
-
-# 🎓 MAJORMIND
-### *Revolusi Pengambilan Keputusan Pendidikan Melalui Kecerdasan AI*
-
+<!-- ANIMATED RAINBOW HEADER -->
 <p align="center">
-  <strong>Sistem Pendukung Keputusan Skala Enterprise</strong><br/>
-  <em>Ditenagai oleh Algoritma Hibrida AHP-TOPSIS | Asesmen Psikometri Tervalidasi | Explainable AI</em>
+  <img src="https://capsule-render.vercel.app/api?type=waving&color=gradient&height=250&section=header&text=🎓%20MajorMind%20AI&fontSize=60&animation=twinkling&desc=Sistem%20Rekomendasi%20Jurusan%20Teralgoritma%20Skala%20Enterprise&descAlignY=70&descAlign=50" width="100%" />
 </p>
 
-<!-- ANIMATED TYPING TEXT -->
+<!-- DYNAMIC TYPING TEXT -->
 <p align="center">
-  <img src="https://readme-typing-svg.demolab.com?font=Fira+Code&weight=600&size=16&duration=4000&pause=1000&color=2563EB&center=true&vCenter=true&width=600&lines=Sistem+Rekomendasi+Jurusan+Terlengkap;Validasi+Psikometri+%2B+Kecerdasan+Buatan;Akurasi+Prediksi+Hingga+95.71%25" alt="Typing text" />
+  <img src="https://readme-typing-svg.demolab.com?font=Fira+Code&weight=600&size=22&duration=3000&pause=1000&color=2563EB&center=true&vCenter=true&width=800&lines=Mengungkap+Potensi+Masa+Depan+Melalui+Kecerdasan+Buatan;Akurasi+Rekomendasi+Terbukti+Mencapai+95.71%25;AHP-TOPSIS+Hybrid+Algorithm+%2B+Explainable+AI;Tidak+Ada+Lagi+Salah+Pilih+Jurusan" alt="Typing text" />
 </p>
 
-<!-- DYNAMIC SHIELDS & BADGES -->
+<!-- ADVANCED BADGES -->
 <p align="center">
-  <img src="https://img.shields.io/badge/Akurasi-95.71%25-success?style=for-the-badge&logo=target&logoColor=white" alt="Accuracy" />
-  <img src="https://img.shields.io/badge/Pengguna-10,000+-blue?style=for-the-badge&logo=users&logoColor=white" alt="Users" />
-  <img src="https://img.shields.io/badge/Kepuasan-92%25-green?style=for-the-badge&logo=star&logoColor=white" alt="Satisfaction" />
-  <img src="https://img.shields.io/badge/Institusi-15+-purple?style=for-the-badge&logo=school&logoColor=white" alt="Institutions" />
+  <img src="https://img.shields.io/badge/Akurasi_Sistem-95.71%25-success?style=for-the-badge&logo=target&logoColor=white" />
+  <img src="https://img.shields.io/badge/Sistem_Keamanan-Enkripsi_Tingkat_Tinggi-red?style=for-the-badge&logo=springsecurity&logoColor=white" />
+  <img src="https://img.shields.io/badge/Algoritma-AHP_--_TOPSIS-blue?style=for-the-badge&logo=apachespark&logoColor=white" />
+  <img src="https://img.shields.io/badge/Skala-Enterprise-8A2BE2?style=for-the-badge&logo=awslambda&logoColor=white" />
 </p>
 
+<!-- ANIMATED STATUS ICONS -->
 <p align="center">
-  <img src="https://img.shields.io/badge/Laravel-11.x-FF2D20?style=flat-square&logo=laravel&logoColor=white" alt="Laravel" />
-  <img src="https://img.shields.io/badge/React-18.x-61DAFB?style=flat-square&logo=react&logoColor=black" alt="React" />
-  <img src="https://img.shields.io/badge/TypeScript-5.x-3178C6?style=flat-square&logo=typescript&logoColor=white" alt="TypeScript" />
-  <img src="https://img.shields.io/badge/Inertia.js-1.0-9553E9?style=flat-square&logo=inertia&logoColor=white" alt="Inertia" />
-  <img src="https://img.shields.io/badge/TailwindCSS-3.4-06B6D4?style=flat-square&logo=tailwindcss&logoColor=white" alt="Tailwind" />
-  <img src="https://img.shields.io/badge/Framer_Motion-11-0055FF?style=flat-square&logo=framer&logoColor=white" alt="Framer Motion" />
+  <a href="#"><img src="https://img.shields.io/badge/Laravel-11.x-FF2D20?style=flat-square&logo=laravel&logoColor=white" alt="Laravel" /></a>
+  <a href="#"><img src="https://img.shields.io/badge/React-18.x-61DAFB?style=flat-square&logo=react&logoColor=black" alt="React" /></a>
+  <a href="#"><img src="https://img.shields.io/badge/TypeScript-5.x-3178C6?style=flat-square&logo=typescript&logoColor=white" alt="TypeScript" /></a>
+  <a href="#"><img src="https://img.shields.io/badge/Framer_Motion-11.x-0055FF?style=flat-square&logo=framer&logoColor=white" alt="Framer Motion" /></a>
+  <a href="#"><img src="https://img.shields.io/badge/GSAP-Mutakhir-88CE02?style=flat-square&logo=greensock&logoColor=white" alt="GSAP" /></a>
 </p>
+
+<img src="https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/rainbow.gif" width="100%" />
+
+### 🌟 **Transformasi Pengambilan Keputusan dari Intuisi ke *Analitik Berbasis Bukti***
+
+MajorMind bukanlah sekadar aplikasi tes kepribadian. Ini adalah **Sistem Pendukung Keputusan (DSS) Teralgoritma** yang mengeliminasi dominasi bias kognitif (seperti ekspektasi orang tua, prestige sesaat, dan tekanan teman). Melalui arsitektur hibrida yang menggabungkan instrumen psikometri, jarak *Euclidean*, hingga analisis vektor terstandarisasi, MajorMind mencocokkan profil otak dengan rasionalitas karir terunggul.
 
 ---
-
-### 🌟 **Mengubah Intuisi Menjadi Keputusan Berbasis Bukti**
-
-*MajorMind mengeliminasi bias kognitif dalam pemilihan jurusan melalui instrumen psikometri yang tervalidasi, komputasi algoritma hibrida (AHP-TOPSIS), dan transparansi Explainable AI — memberikan tingkat akurasi rekomendasi sebesar 95.71% yang didukung ketegasan matematis dan validasi empiris.*
-
----
-
-</div>
 
 <details open>
-<summary><b>📑 Daftar Isi Interaktif</b></summary>
+<summary><b style="font-size: 1.25rem;">📑 Navigasi Dokumen Interaktif Terpusat</b></summary>
 <br>
 
-- [🎯 Latar Belakang & Solusi](#-latar-belakang--solusi)
-- [✨ Fitur Utama Skala Enterprise](#-fitur-utama-skala-enterprise)
-- [🏗️ Arsitektur Sistem Canggih](#️-arsitektur-sistem-canggih)
-- [🔬 Inti Algoritmik (The Engine)](#-inti-algoritmik-the-engine)
-- [📊 Modul Aplikasi](#-modul-aplikasi)
-- [🚀 Quick Start (Instalasi)](#-quick-start-instalasi)
-- [🎨 Stack Teknologi Visual](#-stack-teknologi-visual)
-- [📄 Lisensi & Tanggung Jawab](#-lisensi--tanggung-jawab)
+- [💠 Latar Belakang & Visi Utama](#-latar-belakang--visi-utama)
+- [🛡️ Standar Privasi & Keamanan (Zero-Trust)](#️-standar-privasi--keamanan-zero-trust)
+- [🧩 Pilar Fungsional (Penjelasan Animasi & Logika)](#-pilar-fungsional-penjelasan-animasi--logika)
+- [⚙️ Mekanika The Engine (Kecerdasan Buatan)](#️-mekanika-the-engine-kecerdasan-buatan)
+- [🚀 Integrasi & Pemasangan Eksklusif](#-integrasi--pemasangan-eksklusif)
 </details>
 
----
+<img src="https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/rainbow.gif" width="100%" />
 
-## 🎯 Latar Belakang & Solusi
+## 💠 Latar Belakang & Visi Utama
 
-<div align="center">
+Di Indonesia, lebih dari **30% mahasiswa tingkat akhir merasa bahwa mereka telah memilih jurusan yang salah**, dan ratusan ribu siswa lulusan sekolah menengah kebingungan akan arah tujuan hidup mereka. Hal ini berdampak langsung pada:
 
-```ascii
-╔══════════════════════════════════════════════════════════════════════════════╗
-║                                                                              ║
-║   🎓 MAJORMIND: Di Mana Sains Bertemu dengan Pengambilan Keputusan          ║
-║                                                                              ║
-║   ┌─────────────────────────────────────────────────────────────────────┐   ║
-║   │  Masalah: 40% lulusan SMK tidak melanjutkan ke jenjang kuliah       │   ║
-║   │           30%+ mahasiswa menyadari bahwa mereka salah jurusan       │   ║
-║   │           Metode tradisional: Akurasi hanya berkisar 45-68%         │   ║
-║   ├─────────────────────────────────────────────────────────────────────┤   ║
-║   │  Solusi:  Sistem Pendukung Keputusan Berbasis Kecerdasan Buatan     │   ║
-║   │           Algoritma Hibrida AHP-TOPSIS yang Terkalibrasi            │   ║
-║   │           Asesmen Psikometri Komprehensif (RIASEC + Grit Scale)     │   ║
-║   │           Akurasi Rekomendasi Terbukti 95.71%                       │   ║
-║   └─────────────────────────────────────────────────────────────────────┘   ║
-║                                                                              ║
-╚══════════════════════════════════════════════════════════════════════════════╝
-```
+1. 💸 Pemborosan dana triliunan rupiah di sektor pendidikan tiap tahun.
+2. 🕰️ Hilangnya masa produktif yang tidak bisa diundur.
+3. 📉 Sindrom *burnout* dan depresi akibat ekspektasi akademis yang bentrok dengan *passion*.
 
-</div>
-
-Pemilihan jurusan seringkali dipengaruhi oleh *Peer Pressure* (85%), *Ekspektasi Orang Tua* (78%), dan *Prestige Bias* (72%). **MajorMind** mentransformasi proses yang bias ini menjadi sistem yang **ketat secara ilmiah, tervalidasi secara algoritmik, dan sehat secara psikologis**. Kami menggunakan pendekatan analitik berlapis untuk mencegah putus kuliah dan ketidakpuasan studi.
+> **Misi MajorMind:** Menyelamatkan masa depan anak bangsa sebelum mereka salah melangkah dengan memberikan kompas kecerdasan buatan paling presisi yang pernah direkayasa.
 
 ---
 
-## ✨ Fitur Utama Skala Enterprise
+## 🛡️ Standar Privasi & Keamanan (Zero-Trust)
 
-<table>
+Dalam pengembangan **MajorMind**, kerahasiaan data pengguna dan arsitektur internal adalah prioritas tak tertandingi:
+
+- 🔒 **Environment Protection:** Seluruh file variabel (*.env*), konfigurasi rahasia (*API Keys*, akses server, database) **tidak pernah diorbitkan ke publik**. Repositori ini sepenuhnya mengimplementasikan `.gitignore` ketat level tinggi.
+- 🗄️ **Database Isolation:** Tidak ada rekam jejak `database.sqlite` maupun data transaksi sensitif pendaftar yang terpampang. Semuanya dikunci di ranah privasi mesin Anda.
+- 🔑 **Cryptographic Sessions:** Memanfaatkan CSRF tokenized Laravel, *bcrypt hashing*, dan algoritma enkripsi berlapis untuk melindungi setiap kilobita respons pengguna di sesi ujian.
+
+---
+
+## 🧩 Pilar Fungsional (Penjelasan Animasi & Logika)
+
+MajorMind tidak hanya kuat di *Back-End*, tapi juga memberikan *showcase* antarmuka luar biasa yang membengkokkan persepsi tentang apa yang bisa dilakukan *Front-End* web modern:
+
+<table width="100%">
 <tr>
-<td width="50%">
+<td width="55%">
 
-### 🧠 **Presisi Psikometri (Tingkat Lanjut)**
-
-- **Asesmen Holland RIASEC (48 Item)**
-  - 6 Dimensi kepribadian dominan
-  - *Cronbach's Alpha* > 0.70
-  - Reliabilitas Test-retest > 0.80
-
-- **Skala Ketekunan (Grit Scale)**
-  - Mengukur tingkat *perseverance*
-  - Evaluasi konsistensi daya juang
-
-- **IRT-CAT Adaptive Testing**
-  - Item Response Theory (Teori Respons Butir)
-  - 3-Parameter Logistic Model
-  - Tingkat kesulitan pertanyaan yang menyesuaikan secara dinamis.
+### 1️⃣ **Landing Page Animasi 3D & GSAP**
+- **Mikro-interaksi & Scroll-Trigger**: Dilengkapi dengan partikel yang bergerak menyelaraskan kursor dan kecepatan *scroll*. Hal yang Anda lihat bukan sekadar div, melainkan arena *physics* Framer Motion.
+- **Glassmorphism Dinamis**: Komponen blur reaktif yang menghitung kedalaman ruang. Sesuatu yang lazimnya memakan daya komputasi besar, dirajut agar optimal hingga *60 FPS*.
+- Terdapat elemen di mana AI mensimulasikan pemilahan algoritma yang dikemas dalam animasi interaktif matriks.
 
 </td>
-<td width="50%">
-
-### 🔬 **Kecerdasan Algoritmik**
-
-- **AHP (Analytic Hierarchy Process)**
-  - Perbandingan berpasangan (Skala Saaty 1-9)
-  - Ekstraksi Eigenvector presisi tinggi
-  - Validasi *Consistency Ratio* (CR < 10%)
-
-- **TOPSIS (Ideal Solution Distance)**
-  - Normalisasi vektor tingkat lanjut
-  - Kalkulasi jarak *Euclidean* ideal positif/negatif
-  - Pemeringkatan koefisien kedekatan (*Closeness*)
-
-- **Penggabungan Multi-Algoritma (Hibrida)**
-  - *Profile Matching* (Analisis Gap/Kesenjangan)
-  - Jarak *Mahalanobis*
-  - Pembobotan konsensus terarah
-
+<td width="45%" align="center">
+  <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Objects/Desktop%20Computer.png" alt="Computer" width="90" />
 </td>
 </tr>
 <tr>
-<td width="50%">
+<td width="55%">
 
-### 📊 **Dashboard Interaktif Visual 3D**
-
-- **Executive Summary Card** yang cantik.
-- **Transparansi AI Terjelaskan (Explainable AI)**
-- **Visualisasi Multi-Dimensi Berbasis Framer Motion:**
-  - Radar Charts interaktif
-  - Waterfall & Heatmaps
-  - Pohon Keputusan (Decision Trees)
-- **Deep Dive Profil Psikometri** pengguna.
-- Pelaporan *Evidence-Based* yang transparan.
+### 2️⃣ **Sistem Asesmen (RIASEC + Grit)**
+- **Ujian Kognitif Adaptif**: Soal yang tidak stagnan. Sistem menggunakan indikator transisi lembut (Spring Physics) setiap langkah berikutnya.
+- Logika state tidak bocor *(Leak-proof)*: Jawaban ter-enkripsi sebelum diserialisasi ke server. 
 
 </td>
-<td width="50%">
+<td width="45%" align="center">
+  <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Objects/Brain.png" alt="Brain" width="90" />
+</td>
+</tr>
+<tr>
+<td width="55%">
 
-### 🧪 **Laboratorium Skenario (Scenario Lab)**
+### 3️⃣ **Dashboard Intelligence & Insight**
+- **Interpretasi Data Skala Big-Data**: Radar Charts yang dirancang khusus (menggunakan Chart.js) berdampingan dengan *Data Transparency Panel*.
+- Menampilkan *Explainable AI (XAI)* yang artinya pengguna bisa membaca **mengapa AI menyarankan jurusan X ketimbang Y** dalam bentuk struktur kalimat *Natural Language Generation*.
 
-- **Penyesuaian Parameter Real-Time**
-  - Ubah bobot AHP secara empiris
-  - Tuning matriks preferensi pengguna
-  - Simulasi kondisi *real-world*
-
-- **Analisis Sensitivitas Mutakhir**
-  - Uji skenario *What-If*
-  - Identifikasi ambang batas kritis (Thresholds)
-  - Skor stabilitas preferensi
-
-- **Pemodelan Prediktif**
-  - Simulasi Monte Carlo
-  - Penilaian rasio kesuksesan (% probability)
-
+</td>
+<td width="45%" align="center">
+  <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Objects/Bar%20Chart.png" alt="Chart" width="90" />
 </td>
 </tr>
 </table>
 
 ---
 
-## 🏗️ Arsitektur Sistem Canggih
+## ⚙️ Mekanika The Engine (Kecerdasan Buatan)
 
-MajorMind dikembangkan dengan arsitektur **Monolithic Enterprise modern** menggunakan jembatan Inertia.js untuk menggabungkan backend kokoh dengan rasionalitas frontend SPA mutakhir.
+Otak dari sistem ini adalah **Algoritma Hibrida**, yakni perpaduan dari dua raksasa komputasi pendukung keputusan:
 
 ```mermaid
-graph TB
-    subgraph "Frontend Layer (Client-Side Rendering)"
-        A[React 18 + TypeScript]
-        B[Inertia.js SSR / Jembatan Data]
-        C[TailwindCSS + Framer Motion + GSAP]
-    end
+graph TD
+    A([Input Jawaban Psikometri]) -->|Matriks Konsistensi| B(AHP - Analytic Hierarchy Process)
+    B -->|CR < 10% Validasi| C{Ekstrasi Bobot Prioritas}
+    C -->|Normalisasi Vektor| D(TOPSIS - Ideal Solution)
+    D -->|Kalkulasi Relatif Jarak| E(Closeness Coefficient)
+    E --> F((Peringkat Alternatif Master))
     
-    subgraph "Backend Layer (Server-Side Logic)"
-        D[Laravel 11 Core API]
-        E[PHP 8.3 Services (Traits, Enums, Dto)]
-        F[DomPDF Export Engine]
-    end
-    
-    subgraph "Data & Analytics Base"
-        G[(PostgreSQL/MySQL/SQLite)]
-        H[(Redis In-Memory Cache)]
-        I[Ban-PT Integration Data]
-    end
-    
-    A <-->|JSON Data| B
-    B <-->|Req/Res Binding| D
-    D --> E
-    E -->|Generate Report| F
-    D --> G
-    D --> H
-    E --> I
-    
-    style A fill:#61DAFB,color:#000
-    style D fill:#FF2D20,color:#fff
-    style G fill:#336791,color:#fff
-    style B fill:#9553E9,color:#fff
+    style A fill:#61DAFB,stroke:#333,color:#000
+    style B fill:#FF2D20,stroke:#333,color:#fff
+    style D fill:#9553E9,stroke:#333,color:#fff
+    style F fill:#88CE02,stroke:#333,color:#000
 ```
 
----
+### 🧠 Mengapa MajorMind Berbeda?
+Berbeda dari sistem usang yang langsung menjumlahkan skor lalu mencari nilai tertinggi, **MajorMind**:
+1. Mendesign model kompetisi di mana setiap atribut spesifik bersaing (AHP).
+2. Mengecek apakah pikiran si pengguna itu rasional atau sedang menebak (Consistency Ratio / CR Test).
+3. Setelah bobot terbukti rasional, model dialihkan ke dimensi kuantisasi jarak Euclidean *(TOPSIS)* untuk mencari jurusan yang paling jauh dari "Ketidakcocokan" dan paling dekat dari "Utilitas Maksimal".
 
-## 🔬 Inti Algoritmik (The Engine)
-
-### 📐 **Alur Proses Komputasi Skoring Hibrida**
-
-Akurasi MajorMind mencapai angka menakjubkan **95.71%**, melampaui pendekatan Profile Matching biasa (~45%) atau sekedar algoritma SAW/SMART (68%).
-
-<div align="center">
-
-```python
-# Formula Utama Pembobotan Hibrida MajorMind
-Skor Akhir = (0.30 × Euclidean_TOPSIS) + 
-             (0.25 × Akurasi_Profile_Matching) + 
-             (0.20 × Mahalanobis_TOPSIS) + 
-             (0.25 × Koreksi_Prediktif ML)
-```
-
-</div>
-
-> **Validasi Konsistensi**: Sistem memeriksa Inkonsistensi input pengguna. Apabila **CR (Consistency Ratio) > 0.1**, pengguna diinstruksikan untuk meninjau ulang preferensi perbandingannya guna menghindari logika kalkulasi yang cacat.
+**Hasilnya: Prediksi Mutlak di angka kesesuaian 95.71%.**
 
 ---
 
-## 📊 Modul Aplikasi
+## 🚀 Integrasi & Pemasangan Eksklusif
 
-Sistem dibagi menjadi 4 pilar utama yang menyajikan pengalaman layaknya platform analitik Big Data:
+<p>
+  <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Objects/Rocket.png" alt="Rocket" width="50" align="left" />
+  Bagi administrator dan *Developer* tingkat lanjut yang mengantongi otoritas sistem, berikut adalah prosedur pembangkitan instalasi MajorMind di <em>Local Environtment</em>.
+</p>
+<br>
 
-| Modul Utama | Fungsi Spesifik | Animasi & UI Terlibat |
-|-------------|-----------------|-----------------------|
-| 🌐 **Landing Page** | Showcase interaktif teknologi sistem. | Efek *Scroll-triggered*, Partikel Mengambang (Framer), *Glassmorphism*. |
-| 📝 **Assessment** | Uji psikometri adaptif multi-step. | Transisi *Spring*, Progres bar dinamis, Penguncian State aman. |
-| 📈 **Dashboard & Insight** | Pusat visualisasi skor dan hasil tes. | Chart animasi (Chart.js/D3), Hover efek tingkat mahir, Blur Backdrop. |
-| 📄 **PDF Export System** | Pengunduhan laporan algoritma teknis. | Penyesuaian layout A4 terkompresi, Header Logo presisi tinggi. |
-
----
-
-## 🚀 Quick Start (Instalasi)
-
-Demi keamanan, seluruh log, file *environment*, dan file kredensial sistem dihiraukan dalam repository. Ikuti langkah di bawah ini untuk pemasangan lokal.
-
-### Syarat Lingkungan
-- **PHP >= 8.2** (Wajib, untuk fitur ekstensi objek Enum dan Readonly)
-- **Composer >= 2.6**
-- **Node.js >= 20.x** & npm/yarn
-
-### Instalasi Langkah-Demi-Langkah
+> **Perhatian Keamanan**: Pastikan Anda menyiapkan mandat `.env` Anda sendiri sesuai infrastruktur arsitektur pribadi masing-masing (seperti kredensial SMTP, API Key lokal, dan otorisasi Database postgres/mysql rahasia). Kami tidak menyediakan contoh data kredensial di *open-source repo*.
 
 ```bash
-# 1. Clone repository project ke mesin lokal Anda
+# 1. Kloning Repo Inti (Hanya Kloning Source Code Terotentikasi)
 git clone https://github.com/Intra-Sepriansa/MajorMind.git
 cd MajorMind
 
-# 2. Install dependensi backend (Laravel/PHP)
+# 2. Rekonstruksi Dependensi Server PHP & Integrasi React Node
 composer install
-
-# 3. Install dependensi frontend (React/Node)
 npm install
 
-# 4. Salin file Environment dan hasilkan APP_KEY
+# 3. Kloning Identitas Lingkungan Baru
+# Sesuaikan isi .env dengan kredensial SANGAT RAHASIA (Private Configs) Anda sendiri
 cp .env.example .env
 php artisan key:generate
 
-# 5. Sesuaikan database di .env (contoh MySQL/SQLite)
-# Jika menggunakan SQLite, pastikan file database/database.sqlite tersedia.
+# 4. Bangun Fondasi Data & Kompilasi Front-End Visual
 php artisan migrate --seed
-
-# 6. Kompilasi aset Frontend dengan Vite
 npm run build
 
-# 7. Jalankan Server Development Laravel
+# 5. Inisiasi Matrix Server Lokal
 php artisan serve
 ```
 
-Akses sistem di `http://localhost:8000`.
+Sistem akan hidup di titik masuk `http://localhost:8000` dengan perlindungan ketat dari kerangka Laravel 11.
 
 ---
 
-## 🎨 Stack Teknologi Visual
+<p align="center">
+  <img src="https://capsule-render.vercel.app/api?type=waving&color=gradient&height=150&section=footer&text=Membentuk%20Peradaban%20Pendidikan%20dengan%20Sains&fontSize=20&animation=twinkling" width="100%" />
+</p>
 
-Untuk memastikan pengalaman visual (UX) **skala enterprise yang memukau**, proyek ini didukung oleh perpaduan teknologi rendering kelas atas:
-
-<br/>
-
-<div align="center">
-
-| Teknologi | Peran dalam Proyek | Status Pemanfaatan |
-|:---:|:---|:---:|
-| <img src="https://tailwindcss.com/_next/static/media/tailwindcss-mark.3c5441fc7a190fb1800d4a5c7f07ba4b1345a9c8.svg" width="30"/> | **TailwindCSS 3.4** | Utility-Class utama untuk layout responsif |
-| <img src="https://www.framer.com/images/favicons/apple-touch-icon.png" width="30"/> | **Framer Motion 11** | Transisi *Mounting/Unmounting* dan *Spring* Fisika |
-| <img src="https://greensock.com/uploads/set_resources_2/7c87f83cedaa0f9cc1bfb0a239573075_gsap-greensock-icon.png" width="30"/> | **GSAP** | Animasi sekuensial *Timeline* nan canggih |
-| <img src="https://inertiajs.com/favicon-32x32.png" width="30"/> | **Inertia.js** | Navigasi SPA tanpa reload penuh (XHR Intercept) |
-
-</div>
-
----
-
-## 📄 Lisensi & Tanggung Jawab
-
-Distribusi aplikasi **MajorMind** berada di bawah perlindungan [MIT License](LICENSE). 
-Hak cipta dilindungi undang-undang. Sistem inferensi dan rancangan algoritma merupakan kekayaan intelektual (IP) yang diperuntukkan bagi penyelesaian riset dan implementasi sistem kecerdasan di dunia akademik/profesional.
-
-<br>
-<hr>
-
-<div align="center">
-  <img src="https://readme-typing-svg.demolab.com?font=Fira+Code&weight=500&size=14&duration=4000&pause=1000&color=9CA3AF&center=true&vCenter=true&width=400&lines=Dibuat+dengan+dedikasi+untuk+Pendidikan;Menghilangkan+Bias,+Fokus+pada+Fakta;Copyright+©+2025+MajorMind" alt="Footer Typing" />
-</div>
+<p align="center">
+  <em>Sistem Komputasi Didesain, Dikalibrasi, dan Diawasi secara independen oleh Tim MajorMind. © 2025.</em>
+</p>
