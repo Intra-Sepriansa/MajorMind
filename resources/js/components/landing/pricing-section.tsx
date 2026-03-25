@@ -47,7 +47,7 @@ function TiltCard({ children, popular, index }: { children: React.ReactNode; pop
             initial={{ opacity: 0, y: 40 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            transition={{ delay: index * 0.15, type: 'spring', stiffness: 80 }}
+            transition={{ delay: index * 0.15, type: 'spring' as const, stiffness: 80 }}
         >
             {/* Hover glow */}
             <div className={`absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 bg-gradient-to-br ${plans[index]?.gradient || ''}`} />

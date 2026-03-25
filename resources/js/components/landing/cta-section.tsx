@@ -11,7 +11,7 @@ const containerVariants = {
 };
 const itemVariants = {
     hidden: { y: 15, opacity: 0 },
-    visible: { y: 0, opacity: 1, transition: { type: 'spring', stiffness: 100 } },
+    visible: { y: 0, opacity: 1, transition: { type: 'spring' as const, stiffness: 100 } },
 };
 
 export default function CtaSection() {
@@ -76,7 +76,7 @@ export default function CtaSection() {
                         initial={{ opacity: 0, scale: 0.9 }}
                         whileInView={{ opacity: 1, scale: 1 }}
                         viewport={{ once: true }}
-                        transition={{ delay: 0.3, type: 'spring' }}
+                        transition={{ delay: 0.3, type: 'spring' as const }}
                     >
                         <div className="flex items-center gap-3">
                             <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-500/20 text-emerald-400">

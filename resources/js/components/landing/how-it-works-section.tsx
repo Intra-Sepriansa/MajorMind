@@ -20,7 +20,7 @@ const containerVariants = {
 
 const itemVariants = {
     hidden: { y: 30, opacity: 0, scale: 0.95 },
-    visible: { y: 0, opacity: 1, scale: 1, transition: { type: 'spring', stiffness: 100, damping: 14 } },
+    visible: { y: 0, opacity: 1, scale: 1, transition: { type: 'spring' as const, stiffness: 100, damping: 14 } },
 };
 
 export default function HowItWorksSection() {

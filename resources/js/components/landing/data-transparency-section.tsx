@@ -9,7 +9,7 @@ const containerVariants = {
 };
 const itemVariants = {
     hidden: { y: 25, opacity: 0 },
-    visible: { y: 0, opacity: 1, transition: { type: 'spring', stiffness: 100, damping: 14 } },
+    visible: { y: 0, opacity: 1, transition: { type: 'spring' as const, stiffness: 100, damping: 14 } },
 };
 
 export default function DataTransparencySection() {

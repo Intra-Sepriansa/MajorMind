@@ -63,7 +63,7 @@ function LiveActivityToast() {
                         initial={{ opacity: 0, y: 20, x: -40, scale: 0.9 }}
                         animate={{ opacity: 1, y: 0, x: 0, scale: 1 }}
                         exit={{ opacity: 0, y: -20, scale: 0.9 }}
-                        transition={{ type: 'spring', stiffness: 200, damping: 20 }}
+                        transition={{ type: 'spring' as const, stiffness: 200, damping: 20 }}
                         className="flex items-center gap-3 p-3 bg-[#0b0e14]/90 backdrop-blur-xl rounded-xl border border-white/10 shadow-xl"
                     >
                         <div className="relative">

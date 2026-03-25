@@ -16,7 +16,7 @@ function AnimatedStat({ end, suffix, label, icon: Icon, delay = 0 }: { end: numb
             className="rounded-2xl border border-white/8 bg-white/[0.03] p-4 text-center backdrop-blur-sm"
             initial={{ opacity: 0, y: 30, scale: 0.9 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
-            transition={{ duration: 0.6, delay: 1.2 + delay, type: 'spring', stiffness: 100 }}
+            transition={{ duration: 0.6, delay: 1.2 + delay, type: 'spring' as const, stiffness: 100 }}
             whileHover={{ scale: 1.05, borderColor: 'rgba(255,45,32,0.3)', transition: { duration: 0.2 } }}
         >
             <Icon className="mx-auto h-5 w-5 text-[#ff2d20]" />
@@ -93,7 +93,7 @@ export default function HeroSection({ canRegister = true }: { canRegister?: bool
                             className="h-10 w-10 rounded-2xl shadow-[0_12px_30px_rgba(255,45,32,0.16)]"
                             initial={{ opacity: 0, scale: 0.5, rotate: -180 }}
                             animate={{ opacity: 1, scale: 1, rotate: 0 }}
-                            transition={{ duration: 0.8, type: 'spring' }}
+                            transition={{ duration: 0.8, type: 'spring' as const }}
                         />
                         <motion.div
                             initial={{ opacity: 0, x: -20 }}
@@ -199,7 +199,7 @@ export default function HeroSection({ canRegister = true }: { canRegister?: bool
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ duration: 0.6, delay: 0.8 }}
                         >
-                            <GlowButton href={auth.user ? dashboard() : '/assessment'}>
+                            <GlowButton href={auth.user ? String(dashboard()) : '/assessment'}>
                                 Temukan Jurusan Ideal Anda
                                 <motion.span
                                     animate={{ x: [0, 4, 0] }}
@@ -226,7 +226,7 @@ export default function HeroSection({ canRegister = true }: { canRegister?: bool
                         className="rounded-[32px] border border-white/10 bg-black/60 backdrop-blur-xl p-4 shadow-[0_30px_120px_rgba(0,0,0,0.35)]"
                         initial={{ opacity: 0, x: 60, rotateY: -15 }}
                         animate={{ opacity: 1, x: 0, rotateY: 0 }}
-                        transition={{ duration: 0.8, delay: 0.5, type: 'spring', stiffness: 80 }}
+                        transition={{ duration: 0.8, delay: 0.5, type: 'spring' as const, stiffness: 80 }}
                         whileHover={{ scale: 1.02, boxShadow: '0 30px 120px rgba(255,45,32,0.12)' }}
                         style={{ transformStyle: 'preserve-3d' }}
                     >
