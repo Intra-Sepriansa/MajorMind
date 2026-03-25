@@ -1,0 +1,72 @@
+# ===== ENVIRONMENT & SECRETS =====
+.env
+.env.*
+!.env.example
+/auth.json
+
+# ===== DATABASE (CRITICAL - contains user data) =====
+*.sqlite
+*.sqlite3
+*.db
+database/*.sqlite*
+
+# ===== DEPENDENCIES =====
+/vendor
+/node_modules
+
+# ===== BUILD OUTPUT =====
+/public/build
+/public/hot
+/public/storage
+/bootstrap/ssr
+
+# ===== STORAGE & LOGS =====
+/storage/*.key
+/storage/pail
+/storage/logs/*.log
+/storage/framework/cache/data/*
+/storage/framework/sessions/*
+/storage/framework/views/*
+/storage/app/private/*
+/storage/debugbar/*
+
+# ===== GENERATED CODE =====
+/resources/js/actions
+/resources/js/routes
+/resources/js/wayfinder
+
+# ===== TESTING =====
+/.phpunit.cache
+.phpunit.result.cache
+.phpactor.json
+/coverage
+
+# ===== SSL & CERTIFICATES =====
+*.pem
+*.p12
+*.crt
+*.key
+!storage/*.key
+
+# ===== BACKUP FILES =====
+*.bak
+*.backup
+*.sql
+*.sql.gz
+
+# ===== IDE & EDITOR =====
+/.fleet
+/.idea
+/.nova
+/.vscode
+/.zed
+
+# ===== OS FILES =====
+.DS_Store
+Thumbs.db
+
+# ===== MISC =====
+Homestead.json
+Homestead.yaml
+npm-debug.log
+yarn-error.log
