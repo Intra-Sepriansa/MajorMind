@@ -990,7 +990,7 @@ export default function ComparisonPage({
                                     </Card>
                                 </section>
 
-                                <section className="grid gap-6 xl:grid-cols-[1.15fr_0.85fr]">
+                                <section className="grid gap-6">
                                     <Card className="rounded-[28px] border-white/10 bg-[#000000]/82 py-0">
                                         <CardContent className="px-5 py-5">
                                             <div className="mb-4 flex items-center gap-2 text-xs tracking-[0.28em] text-slate-500 uppercase">

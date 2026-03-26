@@ -4,6 +4,10 @@
 !.env.example
 /auth.json
 
+# ===== FIREBASE (CRITICAL - service account keys) =====
+/storage/firebase-credentials.json
+*firebase-adminsdk*
+
 # ===== DATABASE (CRITICAL - contains user data) =====
 *.sqlite
 *.sqlite3

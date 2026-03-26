@@ -9,7 +9,6 @@ import ComparisonSection from '@/components/landing/comparison-section';
 import DataTransparencySection from '@/components/landing/data-transparency-section';
 import SocialProofSection from '@/components/landing/social-proof-section';
 import HowItWorksSection from '@/components/landing/how-it-works-section';
-import PricingSection from '@/components/landing/pricing-section';
 import FaqSection from '@/components/landing/faq-section';
 import CtaSection from '@/components/landing/cta-section';
 
@@ -64,7 +63,6 @@ export default function Welcome({
                 <DataTransparencySection />
                 <SocialProofSection />
                 <HowItWorksSection />
-                <PricingSection />
                 <FaqSection />
                 <CtaSection />
             </div>

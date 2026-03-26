@@ -1,19 +1,20 @@
-import { CheckCircle2 } from 'lucide-react';
+import { CheckCircle2, ChevronRight, UserCircle, Hexagon, Target, Lightbulb, Scale, ShieldCheck, FileText } from 'lucide-react';
+import React from 'react';
 
 type Step = {
     id: number;
     label: string;
-    duration: string;
+    icon: React.ElementType;
 };
 
 const steps: Step[] = [
-    { id: 1, label: 'Onboarding', duration: '2 min' },
-    { id: 2, label: 'RIASEC', duration: '15 min' },
-    { id: 3, label: 'Grit Scale', duration: '5 min' },
-    { id: 4, label: 'Logic Test', duration: '10 min' },
-    { id: 5, label: 'AHP Pairwise', duration: '10 min' },
-    { id: 6, label: 'Validasi', duration: 'Auto' },
-    { id: 7, label: 'Review', duration: '3 min' },
+    { id: 1, label: 'Onboarding', icon: UserCircle },
+    { id: 2, label: 'RIASEC', icon: Hexagon },
+    { id: 3, label: 'Grit Scale', icon: Target },
+    { id: 4, label: 'Logic Test', icon: Lightbulb },
+    { id: 5, label: 'AHP Pairwise', icon: Scale },
+    { id: 6, label: 'Validasi', icon: ShieldCheck },
+    { id: 7, label: 'Review', icon: FileText },
 ];
 
 type AssessmentStepProgressProps = {
@@ -22,57 +23,76 @@ type AssessmentStepProgressProps = {
 
 export function AssessmentStepProgress({ currentStep }: AssessmentStepProgressProps) {
     return (
-        <div className="mb-8 overflow-x-auto px-1 py-2">
-            <div className="flex min-w-[640px] items-center justify-between">
+        <div className="mb-8 w-full overflow-x-auto pb-4 pt-2 hide-scrollbar">
+            <div className="flex items-center gap-2 sm:gap-4 px-2">
                 {steps.map((step, i) => {
                     const isCompleted = currentStep > step.id;
                     const isActive = currentStep === step.id;
+                    const Icon = step.icon;
 
                     return (
-                        <div key={step.id} className="flex flex-1 items-center">
-                            {/* Node */}
-                            <div className="flex flex-col items-center gap-1.5">
+                        <React.Fragment key={step.id}>
+                            <div
+                                className={`flex shrink-0 items-center gap-3 rounded-[20px] px-4 py-3 transition-all duration-300 ${
+                                    isActive
+                                        ? 'bg-[#ff2d20] shadow-[0_8px_24px_rgba(255,45,32,0.35)]'
+                                        : 'border border-white/10 bg-[#0a0a0a] hover:bg-white/[0.04]'
+                                }`}
+                            >
+                                {/* Icon Circle */}
                                 <div
-                                    className={`relative flex h-9 w-9 items-center justify-center rounded-full border-2 text-xs font-bold transition-all duration-500 ${
-                                        isCompleted
-                                            ? 'border-[#ff2d20] bg-[#ff2d20] text-white shadow-[0_0_16px_rgba(255,45,32,0.5)]'
-                                            : isActive
-                                              ? 'border-[#ff2d20] bg-[#ff2d20]/15 text-[#ff2d20] shadow-[0_0_20px_rgba(255,45,32,0.3)]'
-                                              : 'border-white/12 bg-white/[0.03] text-slate-500'
+                                    className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-full transition-colors ${
+                                        isActive
+                                            ? 'bg-white/20 text-white'
+                                            : isCompleted
+                                              ? 'border border-[#ff2d20]/30 bg-[#ff2d20]/10 text-[#ff2d20]'
+                                              : 'border border-white/10 bg-white/5 text-slate-400'
                                     }`}
                                 >
-                                    {isCompleted ? (
-                                        <CheckCircle2 className="h-4 w-4" />
-                                    ) : (
-                                        step.id
-                                    )}
-                                    {isActive && (
-                                        <span className="absolute inset-0 animate-ping rounded-full border-2 border-[#ff2d20] opacity-20" />
-                                    )}
+                                    {isCompleted && !isActive ? <CheckCircle2 className="h-4 w-4" /> : <Icon className="h-4 w-4" />}
                                 </div>
-                                <span
-                                    className={`text-[10px] font-medium transition-colors ${
-                                        isActive ? 'text-white' : isCompleted ? 'text-slate-300' : 'text-slate-500'
-                                    }`}
-                                >
-                                    {step.label}
-                                </span>
-                                <span className="text-[9px] text-slate-600">{step.duration}</span>
+
+                                {/* Texts */}
+                                <div className="flex flex-col">
+                                    <span
+                                        className={`text-sm font-semibold transition-colors ${
+                                            isActive ? 'text-white' : 'text-slate-200'
+                                        }`}
+                                    >
+                                        {step.label}
+                                    </span>
+                                    <span
+                                        className={`text-[10px] tracking-[0.15em] transition-colors ${
+                                            isActive
+                                                ? 'font-medium text-white/80'
+                                                : isCompleted
+                                                  ? 'font-medium text-[#ff2d20]/80'
+                                                  : 'text-slate-500 uppercase'
+                                        }`}
+                                    >
+                                        {isActive ? 'AKTIF' : isCompleted ? 'SELESAI' : `STEP ${step.id}`}
+                                    </span>
+                                </div>
                             </div>
 
-                            {/* Connector line */}
+                            {/* Separator Chevron */}
                             {i < steps.length - 1 && (
-                                <div className="mx-1.5 h-0.5 flex-1 overflow-hidden rounded-full bg-white/8">
-                                    <div
-                                        className="h-full rounded-full bg-[#ff2d20] transition-all duration-700"
-                                        style={{ width: isCompleted ? '100%' : isActive ? '50%' : '0%' }}
-                                    />
-                                </div>
+                                <ChevronRight className="h-4 w-4 shrink-0 text-slate-700" />
                             )}
-                        </div>
+                        </React.Fragment>
                     );
                 })}
             </div>
+            
+            <style>{`
+                .hide-scrollbar::-webkit-scrollbar {
+                    display: none;
+                }
+                .hide-scrollbar {
+                    -ms-overflow-style: none;
+                    scrollbar-width: none;
+                }
+            `}</style>
         </div>
     );
 }

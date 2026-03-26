@@ -560,7 +560,7 @@ export default function LaserFlow({
             uniforms.uFogTime.value = (uniforms.uFogTime.value as number) + clampedDt;
 
             if (!hasFadedRef.current) {
-                fade = Math.min(1, fade + clampedDt);
+                fade = Math.min(1, fade + clampedDt * 5); // 5x faster fade-in (200ms)
                 uniforms.uFade.value = fade;
                 if (fade >= 1) hasFadedRef.current = true;
             }

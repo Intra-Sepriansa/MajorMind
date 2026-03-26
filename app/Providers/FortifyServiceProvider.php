@@ -47,11 +47,15 @@ class FortifyServiceProvider extends ServiceProvider
         Fortify::createUsersUsing(CreateNewUser::class);
         Fortify::authenticateUsing(function (Request $request): ?User {
             $request->validate([
-                'nim' => ['required', 'string'],
+                'login' => ['required', 'string'],
                 'password' => ['required', 'string'],
             ]);
 
-            $user = User::query()->where('nim', $request->string('nim')->toString())->first();
+            $login = $request->string('login')->toString();
+
+            // Try NIM first, then email
+            $user = User::query()->where('nim', $login)->first()
+                ?? User::query()->where('email', $login)->first();
 
             if (! $user || ! Hash::check($request->string('password')->toString(), $user->password)) {
                 return null;

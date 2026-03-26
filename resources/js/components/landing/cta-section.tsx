@@ -83,8 +83,8 @@ export default function CtaSection() {
                                 <ShieldCheck className="h-5 w-5" />
                             </div>
                             <div className="text-left">
-                                <div className="text-sm font-bold text-white">30-hari Money-back Guarantee</div>
-                                <div className="text-xs text-slate-400">Tidak puas? Uang Anda kembali 100%, tanpa pertanyaan.</div>
+                                <div className="text-sm font-bold text-white">100% Gratis & Selamanya Akan Gratis</div>
+                                <div className="text-xs text-slate-400">Tidak ada biaya langganan, tanpa batasan. Keputusan krusial Anda tidak seharusnya terkunci paywall.</div>
                             </div>
                         </div>
                     </motion.div>
@@ -121,7 +121,7 @@ export default function CtaSection() {
                         {[
                             { icon: Users, text: '10,000+ siswa terlayani' },
                             { icon: BarChart3, text: '95.71% akurasi' },
-                            { icon: ShieldCheck, text: '30-hari money-back guarantee' },
+                            { icon: ShieldCheck, text: '100% Gratis untuk pendidikan' },
                             { icon: Clock, text: 'Digunakan 15+ sekolah' },
                         ].map((t) => (
                             <motion.div key={t.text} className="flex items-center gap-1.5" variants={itemVariants}>
@@ -138,7 +138,7 @@ export default function CtaSection() {
                         viewport={{ once: true }}
                         transition={{ delay: 0.6 }}
                     >
-                        "Investasi Rp 99.000 hari ini bisa menghemat ratusan juta Rupiah dari salah jurusan. Masa depan Anda terlalu berharga untuk diserahkan pada kebetulan."
+                        "MajorMind dibangun untuk membantu setiap siswa menggapai masa depan yang sesuai potensi mereka, jadi kami sediakan sistem AI asesmen karir ini secara cuma-cuma dari hari ini, hingga nanti."
                     </motion.p>
                 </div>
             </section>

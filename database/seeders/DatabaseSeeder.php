@@ -14,7 +14,10 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        $this->call(MahasiswaSqlSeeder::class);
+        $this->call([
+            MahasiswaSqlSeeder::class,
+            QuestionsTableSeeder::class,
+        ]);
 
         $criteria = [
             [

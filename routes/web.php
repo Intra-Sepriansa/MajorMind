@@ -4,6 +4,7 @@ use App\Http\Resources\RecommendationResultResource;
 use App\Http\Controllers\Api\V1\ScenarioLabController;
 use App\Http\Controllers\Api\V1\ComparisonController;
 use App\Http\Controllers\Api\V1\InsightController;
+use App\Http\Controllers\Auth\FirebaseAuthController;
 use App\Models\Assessment;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -91,6 +92,11 @@ $resolveScenarioState = function (Request $request) use ($resolveUserAssessmentS
         'scenarios' => $scenarios,
     ];
 };
+
+// Firebase Authentication
+Route::post('/auth/firebase/callback', [FirebaseAuthController::class, 'callback'])
+    ->middleware('guest')
+    ->name('auth.firebase.callback');
 
 Route::middleware(['auth', 'verified'])->group(function () use (
     $resolveScenarioState,

@@ -4,9 +4,58 @@ namespace App\Services\Comparison;
 
 use App\Models\Assessment;
 use App\Models\Major;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Throwable;
 
 class DecisionScoringEngine
 {
+    private const SCORING_DIMENSIONS = [
+        'algorithmic_fit' => 'Overall algorithmic compatibility',
+        'success_probability' => 'Predicted success & completion',
+        'career_prospects' => 'Career outlook & salary potential',
+        'financial_feasibility' => 'Affordability & ROI',
+        'personal_satisfaction' => 'Interest alignment & satisfaction',
+    ];
+
+    private const DEFAULT_PRIORITIES = [
+        'algorithmic_fit' => 30,
+        'success_probability' => 25,
+        'career_prospects' => 20,
+        'financial_feasibility' => 15,
+        'personal_satisfaction' => 10,
+    ];
+
+    private const SENSITIVITY_SCENARIOS = [
+        'career_focused' => [
+            'algorithmic_fit' => 15,
+            'success_probability' => 15,
+            'career_prospects' => 50,
+            'financial_feasibility' => 10,
+            'personal_satisfaction' => 10,
+        ],
+        'safety_focused' => [
+            'algorithmic_fit' => 25,
+            'success_probability' => 50,
+            'career_prospects' => 10,
+            'financial_feasibility' => 10,
+            'personal_satisfaction' => 5,
+        ],
+        'passion_focused' => [
+            'algorithmic_fit' => 20,
+            'success_probability' => 10,
+            'career_prospects' => 10,
+            'financial_feasibility' => 10,
+            'personal_satisfaction' => 50,
+        ],
+        'financial_focused' => [
+            'algorithmic_fit' => 10,
+            'success_probability' => 10,
+            'career_prospects' => 25,
+            'financial_feasibility' => 50,
+            'personal_satisfaction' => 5,
+        ],
+    ];
+
     /**
      * Generate weighted multi-criteria final recommendation for comparison.
      *
@@ -19,24 +68,22 @@ class DecisionScoringEngine
         int $assessmentId,
         array $userPriorities
     ): array {
-        $assessment = Assessment::with('recommendationResults')->findOrFail($assessmentId);
+        try {
+            $assessment = Assessment::with('recommendationResults')->findOrFail($assessmentId);
+        } catch (ModelNotFoundException $e) {
+            return $this->errorResponse('Assessment not found.');
+        }
+
         $majors = Major::query()->whereIn('id', $majorIds)->get();
+
+        if ($majors->isEmpty()) {
+            return $this->errorResponse('No matching majors found.');
+        }
+
         $userBehavioral = $assessment->behavioral_profile ?? [];
 
         // Normalize priorities to sum = 1
-        $prioritySum = array_sum($userPriorities);
-        $normalizedPriorities = [];
-        foreach ($userPriorities as $key => $val) {
-            $normalizedPriorities[$key] = $prioritySum > 0 ? $val / $prioritySum : 0.2;
-        }
-
-        $scoringDimensions = [
-            'algorithmic_fit' => 'Overall algorithmic compatibility',
-            'success_probability' => 'Predicted success & completion',
-            'career_prospects' => 'Career outlook & salary potential',
-            'financial_feasibility' => 'Affordability & ROI',
-            'personal_satisfaction' => 'Interest alignment & satisfaction',
-        ];
+        $normalizedPriorities = $this->normalizePriorities($userPriorities);
 
         // Build recommendation lookup
         $recLookup = [];
@@ -51,18 +98,12 @@ class DecisionScoringEngine
             $majorBehavioral = $major->behavioral_profile ?? [];
 
             // Compute raw dimension scores (0-100)
-            $dimensionScores = [
-                'algorithmic_fit' => $rec ? round($rec->final_score * 100, 2) : 0,
-                'success_probability' => $this->estimateSuccessProbability($userBehavioral, $majorBehavioral),
-                'career_prospects' => $this->estimateCareerScore($major),
-                'financial_feasibility' => $this->estimateFinancialScore($major),
-                'personal_satisfaction' => $this->estimateSatisfactionScore($userBehavioral, $majorBehavioral),
-            ];
+            $dimensionScores = $this->computeDimensionScores($rec, $userBehavioral, $majorBehavioral, $major);
 
             // Weighted total
             $weightedScore = 0;
             $scoreBreakdown = [];
-            foreach ($scoringDimensions as $dim => $description) {
+            foreach (self::SCORING_DIMENSIONS as $dim => $description) {
                 $weight = $normalizedPriorities[$dim] ?? 0.2;
                 $raw = $dimensionScores[$dim];
                 $contribution = round($raw * $weight, 2);
@@ -79,10 +120,19 @@ class DecisionScoringEngine
             $strengths = [];
             $weaknesses = [];
             foreach ($dimensionScores as $dim => $score) {
+                $dimLabel = self::SCORING_DIMENSIONS[$dim] ?? $dim;
                 if ($score >= 70) {
-                    $strengths[] = ['dimension' => $scoringDimensions[$dim], 'score' => $score, 'level' => $score >= 80 ? 'Excellent' : 'Strong'];
+                    $strengths[] = [
+                        'dimension' => $dimLabel,
+                        'score' => $score,
+                        'level' => $score >= 80 ? 'Excellent' : 'Strong',
+                    ];
                 } elseif ($score < 50) {
-                    $weaknesses[] = ['dimension' => $scoringDimensions[$dim], 'score' => $score, 'severity' => $score < 35 ? 'High Concern' : 'Moderate Concern'];
+                    $weaknesses[] = [
+                        'dimension' => $dimLabel,
+                        'score' => $score,
+                        'severity' => $score < 35 ? 'High Concern' : 'Moderate Concern',
+                    ];
                 }
             }
 
@@ -91,6 +141,7 @@ class DecisionScoringEngine
                 'major_name' => $major->name,
                 'final_score' => round($weightedScore, 2),
                 'score_breakdown' => $scoreBreakdown,
+                'dimension_scores' => $dimensionScores,
                 'strengths' => $strengths,
                 'weaknesses' => $weaknesses,
             ];
@@ -98,19 +149,55 @@ class DecisionScoringEngine
 
         usort($finalScores, fn ($a, $b) => $b['final_score'] <=> $a['final_score']);
 
-        // Priority sensitivity
-        $sensitivityScenarios = $this->analyzePrioritySensitivity($majorIds, $assessmentId);
+        // Priority sensitivity (non-recursive – uses internal scoring only)
+        $sensitivityScenarios = $this->analyzePrioritySensitivity($majors, $recLookup, $userBehavioral);
 
         return [
             'ranked_recommendations' => $finalScores,
             'top_recommendation' => $finalScores[0] ?? null,
-            'scoring_dimensions' => $scoringDimensions,
+            'scoring_dimensions' => self::SCORING_DIMENSIONS,
+            'user_priorities' => $normalizedPriorities,
             'sensitivity_scenarios' => $sensitivityScenarios,
+        ];
+    }
+
+    // ─── Internal helpers ─────────────────────────────────────────────────
+
+    private function normalizePriorities(array $priorities): array
+    {
+        // Ensure all dimensions exist
+        foreach (self::SCORING_DIMENSIONS as $dim => $_) {
+            if (! isset($priorities[$dim])) {
+                $priorities[$dim] = self::DEFAULT_PRIORITIES[$dim] ?? 20;
+            }
+        }
+
+        $sum = array_sum($priorities);
+        $normalized = [];
+        foreach ($priorities as $key => $val) {
+            $normalized[$key] = $sum > 0 ? $val / $sum : 0.2;
+        }
+
+        return $normalized;
+    }
+
+    private function computeDimensionScores($rec, array $userProfile, array $majorProfile, Major $major): array
+    {
+        return [
+            'algorithmic_fit' => $rec ? round($rec->final_score * 100, 2) : 0,
+            'success_probability' => $this->estimateSuccessProbability($userProfile, $majorProfile),
+            'career_prospects' => $this->estimateCareerScore($major),
+            'financial_feasibility' => $this->estimateFinancialScore($major),
+            'personal_satisfaction' => $this->estimateSatisfactionScore($userProfile, $majorProfile),
         ];
     }
 
     private function estimateSuccessProbability(array $userProfile, array $majorProfile): float
     {
+        if (empty($userProfile) || empty($majorProfile)) {
+            return 50.0;
+        }
+
         $totalAlignment = 0;
         $count = 0;
 
@@ -127,9 +214,9 @@ class DecisionScoringEngine
 
     private function estimateCareerScore(Major $major): float
     {
-        // Derive from criteria_scores career-related keys
         $scores = $major->criteria_scores ?? [];
         $career = $scores['prospek_karir'] ?? ($scores['career'] ?? 60);
+
         return round(min(100, max(0, (float) $career)), 1);
     }
 
@@ -137,13 +224,17 @@ class DecisionScoringEngine
     {
         $scores = $major->criteria_scores ?? [];
         $financial = $scores['biaya'] ?? ($scores['financial'] ?? 60);
+
         // Invert: lower cost → higher score
         return round(min(100, max(0, 100 - (float) $financial)), 1);
     }
 
     private function estimateSatisfactionScore(array $userProfile, array $majorProfile): float
     {
-        // Interest-weighted alignment
+        if (empty($userProfile) || empty($majorProfile)) {
+            return 50.0;
+        }
+
         $interestKeys = ['minat_stem', 'minat_seni', 'minat_sosial', 'minat_manajemen'];
         $total = 0;
         $count = 0;
@@ -159,25 +250,56 @@ class DecisionScoringEngine
         return $count > 0 ? round($total / $count, 1) : 50;
     }
 
-    private function analyzePrioritySensitivity(array $majorIds, int $assessmentId): array
+    /**
+     * Non-recursive sensitivity analysis: runs scoring inline instead of calling
+     * generateFinalRecommendation again.
+     */
+    private function analyzePrioritySensitivity($majors, array $recLookup, array $userBehavioral): array
     {
-        $scenarios = [
-            'career_focused' => ['algorithmic_fit' => 15, 'success_probability' => 15, 'career_prospects' => 50, 'financial_feasibility' => 10, 'personal_satisfaction' => 10],
-            'safety_focused' => ['algorithmic_fit' => 25, 'success_probability' => 50, 'career_prospects' => 10, 'financial_feasibility' => 10, 'personal_satisfaction' => 5],
-            'passion_focused' => ['algorithmic_fit' => 20, 'success_probability' => 10, 'career_prospects' => 10, 'financial_feasibility' => 10, 'personal_satisfaction' => 50],
-            'financial_focused' => ['algorithmic_fit' => 10, 'success_probability' => 10, 'career_prospects' => 25, 'financial_feasibility' => 50, 'personal_satisfaction' => 5],
-        ];
-
         $results = [];
-        foreach ($scenarios as $name => $priorities) {
-            $result = $this->generateFinalRecommendation($majorIds, $assessmentId, $priorities);
-            $top = $result['top_recommendation'] ?? null;
-            $results[$name] = [
-                'top_major' => $top['major_name'] ?? 'N/A',
-                'score' => $top['final_score'] ?? 0,
+
+        foreach (self::SENSITIVITY_SCENARIOS as $scenarioName => $priorities) {
+            $normalized = $this->normalizePriorities($priorities);
+            $best = null;
+            $bestScore = -1;
+
+            foreach ($majors as $major) {
+                $rec = $recLookup[$major->id] ?? null;
+                $majorBehavioral = $major->behavioral_profile ?? [];
+                $dimensionScores = $this->computeDimensionScores($rec, $userBehavioral, $majorBehavioral, $major);
+
+                $weightedScore = 0;
+                foreach (self::SCORING_DIMENSIONS as $dim => $_) {
+                    $weight = $normalized[$dim] ?? 0.2;
+                    $weightedScore += $dimensionScores[$dim] * $weight;
+                }
+                $weightedScore = round($weightedScore, 2);
+
+                if ($weightedScore > $bestScore) {
+                    $bestScore = $weightedScore;
+                    $best = $major->name;
+                }
+            }
+
+            $results[$scenarioName] = [
+                'top_major' => $best ?? 'N/A',
+                'score' => $bestScore,
+                'priorities' => $normalized,
             ];
         }
 
         return $results;
+    }
+
+    private function errorResponse(string $message): array
+    {
+        return [
+            'ranked_recommendations' => [],
+            'top_recommendation' => null,
+            'scoring_dimensions' => self::SCORING_DIMENSIONS,
+            'user_priorities' => [],
+            'sensitivity_scenarios' => [],
+            'error' => $message,
+        ];
     }
 }

@@ -99,33 +99,134 @@ function AnimCounter({ end, suffix = '' }: { end: number; suffix?: string }) {
     );
 }
 
-/* ---------- CR Gauge Mini ---------- */
+/* ---------- CR Gauge Animated ---------- */
 
 function CrGaugeMini({ cr }: { cr: number }) {
-    const { color } = getConfidenceLabel(cr);
-    const angle = Math.min(cr / 0.2, 1) * 180 - 90; // maps 0‑0.2 to -90°‑90°
+    const { color, label } = getConfidenceLabel(cr);
+    const targetAngle = Math.min(cr / 0.2, 1) * 180 - 90; // maps 0‑0.2 to -90°‑90°
+    const [angle, setAngle] = useState(-90);
+    const [crDisplay, setCrDisplay] = useState(0);
+    const started = useRef(false);
+    const ref = useRef<SVGSVGElement>(null);
+
+    useEffect(() => {
+        const el = ref.current;
+        if (!el) return;
+        const obs = new IntersectionObserver(
+            ([e]) => {
+                if (e.isIntersecting && !started.current) {
+                    started.current = true;
+                    const t0 = performance.now();
+                    const duration = 1800;
+                    const step = (now: number) => {
+                        const p = Math.min((now - t0) / duration, 1);
+                        // Elastic ease-out for a satisfying overshoot
+                        const ease = p === 1 ? 1 : 1 - Math.pow(2, -10 * p) * Math.cos((p * 10 - 0.75) * (2 * Math.PI) / 3);
+                        setAngle(-90 + ease * (targetAngle + 90));
+                        setCrDisplay(ease * cr);
+                        if (p < 1) requestAnimationFrame(step);
+                    };
+                    requestAnimationFrame(step);
+                }
+            },
+            { threshold: 0.3 },
+        );
+        obs.observe(el);
+        return () => obs.disconnect();
+    }, [cr, targetAngle]);
+
+    const nx = 60 + 38 * Math.cos((angle * Math.PI) / 180);
+    const ny = 62 + 38 * Math.sin((angle * Math.PI) / 180);
+
+    // Arc fill: how much of the 180° arc is filled
+    const fillFrac = Math.max(0, Math.min(1, (angle + 90) / 180));
+    const fillAngleRad = (-Math.PI / 2) + fillFrac * Math.PI; // from -90° in radians
+    const arcEndX = 60 + 50 * Math.cos(fillAngleRad);
+    // Offset by 2 for center alignment
+    const arcEndY = 62 + 50 * Math.sin(fillAngleRad);
+    const largeArc = fillFrac > 0.5 ? 1 : 0;
 
     return (
-        <svg viewBox="0 0 120 70" className="h-16 w-28">
-            {/* background arcs */}
-            <path d="M 10 60 A 50 50 0 0 1 110 60" fill="none" stroke="rgba(255,255,255,0.08)" strokeWidth="8" strokeLinecap="round" />
-            <path d="M 10 60 A 50 50 0 0 1 60 10" fill="none" stroke="#22c55e" strokeWidth="8" strokeLinecap="round" opacity={0.3} />
-            <path d="M 60 10 A 50 50 0 0 1 85 16" fill="none" stroke="#eab308" strokeWidth="8" strokeLinecap="round" opacity={0.3} />
-            <path d="M 85 16 A 50 50 0 0 1 110 60" fill="none" stroke="#ef4444" strokeWidth="8" strokeLinecap="round" opacity={0.3} />
-            {/* needle */}
+        <svg ref={ref} viewBox="0 0 120 80" className="h-24 w-40">
+            <defs>
+                {/* Glow filter for the active arc */}
+                <filter id="arcGlow" x="-50%" y="-50%" width="200%" height="200%">
+                    <feGaussianBlur in="SourceGraphic" stdDeviation="3" result="blur" />
+                    <feMerge>
+                        <feMergeNode in="blur" />
+                        <feMergeNode in="SourceGraphic" />
+                    </feMerge>
+                </filter>
+                {/* Needle tip glow */}
+                <filter id="needleGlow" x="-50%" y="-50%" width="200%" height="200%">
+                    <feGaussianBlur in="SourceGraphic" stdDeviation="2.5" result="blur" />
+                    <feMerge>
+                        <feMergeNode in="blur" />
+                        <feMergeNode in="SourceGraphic" />
+                    </feMerge>
+                </filter>
+                {/* Gradient for the active arc */}
+                <linearGradient id="arcGrad" x1="0%" y1="100%" x2="100%" y2="0%">
+                    <stop offset="0%" stopColor="#22c55e" />
+                    <stop offset="50%" stopColor="#eab308" />
+                    <stop offset="100%" stopColor="#ef4444" />
+                </linearGradient>
+            </defs>
+
+            {/* Background arc segments */}
+            <path d="M 10 62 A 50 50 0 0 1 60 12" fill="none" stroke="#22c55e" strokeWidth="7" strokeLinecap="round" opacity={0.12} />
+            <path d="M 60 12 A 50 50 0 0 1 85 18" fill="none" stroke="#eab308" strokeWidth="7" strokeLinecap="round" opacity={0.12} />
+            <path d="M 85 18 A 50 50 0 0 1 110 62" fill="none" stroke="#ef4444" strokeWidth="7" strokeLinecap="round" opacity={0.12} />
+
+            {/* Track background */}
+            <path d="M 10 62 A 50 50 0 0 1 110 62" fill="none" stroke="rgba(255,255,255,0.06)" strokeWidth="7" strokeLinecap="round" />
+
+            {/* Active arc (animated fill) */}
+            {fillFrac > 0.001 && (
+                <path
+                    d={`M 10 62 A 50 50 0 ${largeArc} 1 ${arcEndX.toFixed(2)} ${arcEndY.toFixed(2)}`}
+                    fill="none"
+                    stroke={color}
+                    strokeWidth="7"
+                    strokeLinecap="round"
+                    filter="url(#arcGlow)"
+                    opacity={0.85}
+                />
+            )}
+
+            {/* Tick marks */}
+            {[0, 0.25, 0.5, 0.75, 1].map((frac) => {
+                const a = (-Math.PI) + frac * Math.PI;
+                const ix = 60 + 42 * Math.cos(a);
+                const iy = 62 + 42 * Math.sin(a);
+                const ox = 60 + 56 * Math.cos(a);
+                const oy = 62 + 56 * Math.sin(a);
+                return (
+                    <line key={frac} x1={ix} y1={iy} x2={ox} y2={oy} stroke="rgba(255,255,255,0.15)" strokeWidth="1" />
+                );
+            })}
+
+            {/* Needle */}
             <line
-                x1="60"
-                y1="60"
-                x2={60 + 38 * Math.cos((angle * Math.PI) / 180)}
-                y2={60 + 38 * Math.sin((angle * Math.PI) / 180)}
+                x1="60" y1="62" x2={nx} y2={ny}
                 stroke={color}
                 strokeWidth="2.5"
                 strokeLinecap="round"
+                filter="url(#needleGlow)"
             />
-            <circle cx="60" cy="60" r="3" fill={color} />
-            {/* label */}
-            <text x="60" y="55" textAnchor="middle" fill="white" fontSize="11" fontWeight="600">
-                {cr.toFixed(4)}
+            {/* Needle tip dot */}
+            <circle cx={nx} cy={ny} r="2.5" fill={color} filter="url(#needleGlow)" />
+            {/* Center hub */}
+            <circle cx="60" cy="62" r="5" fill="#111" stroke={color} strokeWidth="1.5" opacity={0.9} />
+            <circle cx="60" cy="62" r="2" fill={color} opacity={0.7} />
+
+            {/* Value display */}
+            <text x="60" y="53" textAnchor="middle" fill="white" fontSize="14" fontWeight="700" fontFamily="ui-monospace, monospace">
+                {crDisplay.toFixed(4)}
+            </text>
+            {/* Label */}
+            <text x="60" y="77" textAnchor="middle" fill={color} fontSize="8" fontWeight="600" letterSpacing="0.08em">
+                {label.toUpperCase()}
             </text>
         </svg>
     );
@@ -135,28 +236,47 @@ function CrGaugeMini({ cr }: { cr: number }) {
 
 function PhaseNavigator({ completedPhases }: { completedPhases: number }) {
     return (
-        <div className="flex items-center gap-1 overflow-x-auto py-2 sm:gap-2">
+        <div className="grid grid-cols-6 gap-0">
             {phaseData.map((phase, i) => {
                 const done = i < completedPhases;
+                const isLast = i === phaseData.length - 1;
                 return (
-                    <Link
-                        key={phase.id}
-                        href="/insights"
-                        className="group flex flex-col items-center gap-1.5 rounded-2xl border border-white/8 bg-white/[0.02] px-3 py-3 transition-all hover:border-[#ff2d20]/30 hover:bg-[#ff2d20]/5 sm:px-4"
-                    >
-                        <div
-                            className={`flex h-8 w-8 items-center justify-center rounded-full text-xs font-bold transition-all ${
-                                done
-                                    ? 'bg-[#ff2d20] text-white shadow-[0_0_12px_rgba(255,45,32,0.4)]'
-                                    : 'border border-white/15 text-slate-400'
-                            }`}
+                    <div key={phase.id} className="relative flex flex-col items-center">
+                        {/* Connecting line */}
+                        {!isLast && (
+                            <div className="absolute top-4 left-[calc(50%+16px)] right-0 h-[2px] z-0">
+                                <div
+                                    className={`h-full w-full ${
+                                        i < completedPhases - 1
+                                            ? 'bg-gradient-to-r from-[#ff2d20] to-[#ff2d20]/60'
+                                            : 'bg-white/8'
+                                    }`}
+                                />
+                            </div>
+                        )}
+                        {/* Step circle */}
+                        <Link
+                            href="/insights"
+                            className="group relative z-10 flex flex-col items-center gap-2"
                         >
-                            {done ? <CheckCircle2 className="h-4 w-4" /> : `0${phase.id}`}
-                        </div>
-                        <span className="text-[10px] tracking-wide text-slate-400 group-hover:text-white sm:text-xs">
-                            {phase.name}
-                        </span>
-                    </Link>
+                            <div
+                                className={`flex h-8 w-8 items-center justify-center rounded-full text-xs font-bold transition-all duration-300 ${
+                                    done
+                                        ? 'bg-[#ff2d20] text-white shadow-[0_0_16px_rgba(255,45,32,0.45)]'
+                                        : 'border border-white/15 bg-white/[0.03] text-slate-500 group-hover:border-white/25 group-hover:text-slate-300'
+                                }`}
+                            >
+                                {done ? <CheckCircle2 className="h-4 w-4" /> : phase.id}
+                            </div>
+                            <div className="text-center">
+                                <span className={`block text-[10px] font-medium tracking-wide sm:text-[11px] ${
+                                    done ? 'text-white' : 'text-slate-500 group-hover:text-slate-300'
+                                }`}>
+                                    {phase.name}
+                                </span>
+                            </div>
+                        </Link>
+                    </div>
                 );
             })}
         </div>
@@ -314,49 +434,59 @@ export function CommandCenter({ assessment, onExportPdf, isExporting }: CommandC
                 </div>
 
                 {/* Algorithmic Confidence Meter */}
-                <Card className="rounded-[24px] border-white/10 bg-[#000000]/82 py-0">
+                <Card className="relative overflow-hidden rounded-[24px] border-white/10 bg-[#000000]/82 py-0">
+                    {/* Subtle animated gradient border glow */}
+                    <div className="pointer-events-none absolute inset-0 rounded-[24px] ring-1 ring-inset ring-white/[0.06]" />
                     <CardContent className="space-y-4 px-5 py-5">
                         <div className="flex items-center gap-2 text-xs tracking-[0.28em] text-slate-500 uppercase">
-                            <Shield className="h-3.5 w-3.5 text-[#ff2d20]" />
+                            <div className="flex h-6 w-6 items-center justify-center rounded-lg bg-[#ff2d20]/10">
+                                <Shield className="h-3.5 w-3.5 text-[#ff2d20]" />
+                            </div>
                             Algorithmic Confidence
                         </div>
 
                         {/* CR Gauge */}
-                        <div className="flex flex-col items-center">
+                        <div className="flex flex-col items-center py-1">
                             <CrGaugeMini cr={cr} />
-                            <span className="mt-1 text-xs font-medium" style={{ color: crInfo.color }}>
-                                {crInfo.label} Consistency
-                            </span>
                         </div>
 
                         {/* Metrics */}
-                        <div className="space-y-2.5">
-                            <div className="flex items-center justify-between rounded-xl border border-white/6 bg-white/[0.02] px-3 py-2 text-xs">
+                        <div className="space-y-2">
+                            <div className="flex items-center justify-between rounded-xl border border-white/6 bg-white/[0.03] px-3 py-2.5 text-xs">
                                 <span className="text-slate-400">CR Score</span>
-                                <span className="font-mono font-semibold" style={{ color: crInfo.color }}>
-                                    {cr.toFixed(4)}
-                                    <span className="ml-1 text-slate-500">/ 0.1</span>
-                                </span>
+                                <div className="flex items-center gap-1.5">
+                                    <span className="font-mono font-semibold" style={{ color: crInfo.color }}>
+                                        {cr.toFixed(4)}
+                                    </span>
+                                    <span className="text-slate-600">/</span>
+                                    <span className="font-mono text-slate-500">0.1</span>
+                                </div>
                             </div>
-                            <div className="flex items-center justify-between rounded-xl border border-white/6 bg-white/[0.02] px-3 py-2 text-xs">
+                            <div className="flex items-center justify-between rounded-xl border border-white/6 bg-white/[0.03] px-3 py-2.5 text-xs">
                                 <span className="text-slate-400">Normalization</span>
-                                <span className={normComplete ? 'text-green-400' : 'text-yellow-400'}>
-                                    {normComplete ? 'Complete' : 'Pending'}
-                                </span>
+                                <div className="flex items-center gap-1.5">
+                                    <span className={`inline-block h-1.5 w-1.5 rounded-full ${normComplete ? 'bg-green-400 shadow-[0_0_6px_rgba(74,222,128,0.6)]' : 'bg-yellow-400 animate-pulse shadow-[0_0_6px_rgba(250,204,21,0.6)]'}`} />
+                                    <span className={normComplete ? 'font-medium text-green-400' : 'font-medium text-yellow-400'}>
+                                        {normComplete ? 'Complete' : 'Pending'}
+                                    </span>
+                                </div>
                             </div>
-                            <div className="flex items-center justify-between rounded-xl border border-white/6 bg-white/[0.02] px-3 py-2 text-xs">
+                            <div className="flex items-center justify-between rounded-xl border border-white/6 bg-white/[0.03] px-3 py-2.5 text-xs">
                                 <span className="text-slate-400">Confidence</span>
-                                <span className="font-semibold" style={{ color: confidence.color }}>
-                                    {confidence.label}
-                                </span>
+                                <div className="flex items-center gap-1.5">
+                                    <span className="inline-block h-1.5 w-1.5 rounded-full shadow-[0_0_6px]" style={{ backgroundColor: confidence.color, boxShadow: `0 0 6px ${confidence.color}80` }} />
+                                    <span className="font-semibold" style={{ color: confidence.color }}>
+                                        {confidence.label}
+                                    </span>
+                                </div>
                             </div>
                         </div>
 
                         {/* Confidence Bar */}
                         <div>
-                            <div className="mb-1 flex justify-between text-xs text-slate-500">
-                                <span>Overall</span>
-                                <span>{confidence.value.toFixed(1)}%</span>
+                            <div className="mb-1.5 flex justify-between text-xs text-slate-500">
+                                <span>Overall Score</span>
+                                <span className="font-mono font-semibold text-white">{confidence.value.toFixed(1)}%</span>
                             </div>
                             <div className="h-2 overflow-hidden rounded-full bg-white/8">
                                 <div
@@ -364,6 +494,7 @@ export function CommandCenter({ assessment, onExportPdf, isExporting }: CommandC
                                     style={{
                                         width: `${confidence.value}%`,
                                         background: `linear-gradient(90deg, ${confidence.color}, #ff2d20)`,
+                                        boxShadow: `0 0 12px ${confidence.color}40`,
                                     }}
                                 />
                             </div>
@@ -374,9 +505,11 @@ export function CommandCenter({ assessment, onExportPdf, isExporting }: CommandC
 
             {/* Phase Navigator */}
             <Card className="rounded-[24px] border-white/10 bg-[#000000]/82 py-0">
-                <CardContent className="px-5 py-4">
-                    <div className="mb-3 flex items-center gap-2 text-xs tracking-[0.28em] text-slate-500 uppercase">
-                        <Gauge className="h-3.5 w-3.5 text-[#ff2d20]" />
+                <CardContent className="px-5 py-5 sm:px-6">
+                    <div className="mb-4 flex items-center gap-2 text-xs tracking-[0.28em] text-slate-500 uppercase">
+                        <div className="flex h-6 w-6 items-center justify-center rounded-lg bg-[#ff2d20]/10">
+                            <Gauge className="h-3.5 w-3.5 text-[#ff2d20]" />
+                        </div>
                         6 Fase Komputasi
                     </div>
                     <PhaseNavigator completedPhases={completedPhases} />

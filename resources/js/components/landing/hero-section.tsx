@@ -5,6 +5,7 @@ import { useCountUp, useTypewriter } from '@/hooks/use-animations';
 import { motion, useMotionValue, useTransform } from 'framer-motion';
 import { useEffect, useState, useRef, useCallback } from 'react';
 import FloatingParticles from './floating-particles';
+import NeuralMatchingEngine from './neural-matching-engine';
 
 const font = { fontFamily: '"Space Grotesk", var(--font-sans)' };
 
@@ -117,7 +118,7 @@ export default function HeroSection({ canRegister = true }: { canRegister?: bool
                 </div>
             </header>
 
-            <section id="hero" ref={containerRef} onMouseMove={handleMouseMove} className="relative flex min-h-[90vh] items-center">
+            <section id="hero" ref={containerRef} onMouseMove={handleMouseMove} className="relative flex min-h-screen items-center pb-24">
                 {/* Animated gradient mesh background */}
                 <div className="pointer-events-none absolute inset-0">
                     <motion.div
@@ -153,15 +154,7 @@ export default function HeroSection({ canRegister = true }: { canRegister?: bool
 
                 <div className="relative mx-auto grid max-w-7xl items-center gap-12 px-6 py-20 lg:grid-cols-[1.1fr_0.9fr] lg:px-10">
                     <div className="space-y-8">
-                        <motion.div
-                            className="inline-flex items-center gap-2 rounded-full border border-[#ff2d20]/20 bg-[#ff2d20]/10 px-4 py-2 text-xs tracking-[0.2em] text-[#ffb4ae] uppercase"
-                            initial={{ opacity: 0, y: -20 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ duration: 0.5, delay: 0.1 }}
-                        >
-                            <AlertTriangle className="h-3.5 w-3.5" />
-                            Krisis Pemilihan Jurusan
-                        </motion.div>
+
 
                         <motion.h1
                             ref={tw.ref}
@@ -221,74 +214,8 @@ export default function HeroSection({ canRegister = true }: { canRegister?: bool
                         </div>
                     </div>
 
-                    {/* AHP Matrix card with glassmorphism */}
-                    <motion.div
-                        className="rounded-[32px] border border-white/10 bg-black/60 backdrop-blur-xl p-4 shadow-[0_30px_120px_rgba(0,0,0,0.35)]"
-                        initial={{ opacity: 0, x: 60, rotateY: -15 }}
-                        animate={{ opacity: 1, x: 0, rotateY: 0 }}
-                        transition={{ duration: 0.8, delay: 0.5, type: 'spring' as const, stiffness: 80 }}
-                        whileHover={{ scale: 1.02, boxShadow: '0 30px 120px rgba(255,45,32,0.12)' }}
-                        style={{ transformStyle: 'preserve-3d' }}
-                    >
-                        <div className="flex items-center gap-2 border-b border-white/8 px-4 py-3">
-                            <motion.span className="h-3 w-3 rounded-full bg-[#ff5f56]" animate={{ scale: [1, 1.2, 1] }} transition={{ duration: 2, repeat: Infinity, delay: 0 }} />
-                            <motion.span className="h-3 w-3 rounded-full bg-[#ffbd2e]" animate={{ scale: [1, 1.2, 1] }} transition={{ duration: 2, repeat: Infinity, delay: 0.3 }} />
-                            <motion.span className="h-3 w-3 rounded-full bg-[#27c93f]" animate={{ scale: [1, 1.2, 1] }} transition={{ duration: 2, repeat: Infinity, delay: 0.6 }} />
-                            <span className="ml-2 text-xs tracking-[0.3em] text-slate-500 uppercase">recommendation.engine</span>
-                        </div>
-                        <div className="grid gap-5 p-4 md:p-5">
-                            <div className="rounded-2xl border border-white/8 bg-white/[0.03] p-4">
-                                <div className="flex items-center justify-between">
-                                    <span className="text-xs tracking-[0.3em] text-slate-500 uppercase">Live AHP Matrix</span>
-                                    <motion.span
-                                        className="rounded-full border border-[#ff2d20]/25 bg-[#ff2d20]/10 px-3 py-1 text-xs text-[#ffb4ae]"
-                                        animate={{ scale: [1, 1.05, 1] }}
-                                        transition={{ duration: 2, repeat: Infinity }}
-                                    >
-                                        CR ≤ 0.1
-                                    </motion.span>
-                                </div>
-                                <div className="mt-3 space-y-2">
-                                    {[['1.000','3.000','5.000','7.000'],['0.333','1.000','3.000','5.000'],['0.200','0.333','1.000','3.000'],['0.143','0.200','0.333','1.000']].map((row, ri) => (
-                                        <motion.div
-                                            key={row.join('-')}
-                                            className="grid grid-cols-4 gap-1.5 font-mono text-xs"
-                                            initial={{ opacity: 0, x: -20 }}
-                                            animate={{ opacity: 1, x: 0 }}
-                                            transition={{ delay: 1.2 + ri * 0.1 }}
-                                        >
-                                            {row.map((c, i) => <div key={i} className="rounded-lg border border-white/8 bg-[#0b0e14] px-2 py-1.5 text-center text-slate-200">{c}</div>)}
-                                        </motion.div>
-                                    ))}
-                                </div>
-                            </div>
-                            <div className="grid grid-cols-2 gap-4">
-                                <motion.div
-                                    className="rounded-2xl border border-white/8 bg-white/[0.03] p-4"
-                                    initial={{ opacity: 0, y: 20 }}
-                                    animate={{ opacity: 1, y: 0 }}
-                                    transition={{ delay: 1.6 }}
-                                >
-                                    <span className="text-xs tracking-[0.3em] text-slate-500 uppercase">Eigenvector</span>
-                                    <div className="mt-2 font-mono text-xs text-slate-300 space-y-1">
-                                        <div className="rounded-lg bg-[#0b0e14] px-3 py-1.5">w = [0.558, 0.263, 0.122, 0.057]</div>
-                                    </div>
-                                </motion.div>
-                                <motion.div
-                                    className="rounded-2xl border border-white/8 bg-white/[0.03] p-4"
-                                    initial={{ opacity: 0, y: 20 }}
-                                    animate={{ opacity: 1, y: 0 }}
-                                    transition={{ delay: 1.8 }}
-                                >
-                                    <span className="text-xs tracking-[0.3em] text-slate-500 uppercase">TOPSIS Score</span>
-                                    <div className="mt-2 space-y-1 font-mono text-xs text-slate-300">
-                                        <div className="rounded-lg bg-[#0b0e14] px-3 py-1.5">D⁺ = 0.041</div>
-                                        <div className="rounded-lg bg-[#0b0e14] px-3 py-1.5">Ci = <span className="text-[#ff2d20] font-bold">0.924</span></div>
-                                    </div>
-                                </motion.div>
-                            </div>
-                        </div>
-                    </motion.div>
+                    {/* Neural Matching Engine Animation */}
+                    <NeuralMatchingEngine />
                 </div>
 
                 <ScrollIndicator />

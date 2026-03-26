@@ -39,7 +39,7 @@ trait ProfileValidationRules
     protected function nimRules(?int $userId = null): array
     {
         return [
-            'required',
+            'nullable',
             'string',
             'max:20',
             $userId === null

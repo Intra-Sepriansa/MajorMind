@@ -247,15 +247,17 @@ class AdaptiveLogicTest
         $theta = $session['theta'];
         $se = $session['standard_error'];
 
-        // Convert θ (−3..+3) to 0–100
-        $logicScore = (($theta + 3) / 6) * 100;
-        $logicScore = max(0, min(100, $logicScore));
+        // Core Sigmoid Transformation as mandated by the MajorMind research paper
+        // S(theta) = 1 / (1 + e^-theta) -> Translates (-inf, +inf) to (0, 1)
+        $sigmoidRatio = \App\Services\Algorithms\SigmoidTransformer::transform($theta);
+        $logicScore = $sigmoidRatio * 100; // Scaled for Profile Matching compatibility
 
-        $ciLower = (($theta - 1.96 * $se) + 3) / 6 * 100;
-        $ciUpper = (($theta + 1.96 * $se) + 3) / 6 * 100;
+        $ciLower = (\App\Services\Algorithms\SigmoidTransformer::transform($theta - 1.96 * $se)) * 100;
+        $ciUpper = (\App\Services\Algorithms\SigmoidTransformer::transform($theta + 1.96 * $se)) * 100;
 
         return [
-            'theta' => round($theta, 2),
+            'theta' => round($theta, 4),
+            'sigmoid_ratio' => round($sigmoidRatio, 4),
             'standard_error' => round($se, 3),
             'logic_score' => round($logicScore, 1),
             'confidence_interval_95' => [
@@ -307,58 +309,28 @@ class AdaptiveLogicTest
      */
     private function updateTheta(array &$session): array
     {
-        $theta = $session['theta'];
-        $maxIterations = 20;
-        $tolerance = 0.001;
-
-        for ($i = 0; $i < $maxIterations; $i++) {
-            $firstDerivative = 0.0;
-            $secondDerivative = 0.0;
-
-            foreach ($session['responses'] as $response) {
-                $item = collect($this->itemBank)->firstWhere('id', $response['id']);
-
-                if (! $item) {
-                    continue;
-                }
-
-                $p = $this->probability($item, $theta);
-                $a = $item['discrimination'];
-                $c = $item['guessing'];
-                $u = $response['correct'] ? 1 : 0;
-
-                // Avoid division by zero
-                $pSafe = max(0.001, min(0.999, $p));
-                $pStar = ($pSafe - $c) / (1 - $c);
-                $pStarSafe = max(0.001, min(0.999, $pStar));
-
-                $firstDerivative += $a * ($u - $pSafe) * $pStarSafe / ($pSafe * (1 - $pSafe));
-                $secondDerivative += -($a ** 2) * $pStarSafe * (1 - $pStarSafe);
-            }
-
-            if (abs($secondDerivative) < 1e-10) {
-                break;
-            }
-
-            $delta = -$firstDerivative / $secondDerivative;
-            $theta += $delta;
-
-            // Clamp θ
-            $theta = max(-3.0, min(3.0, $theta));
-
-            if (abs($delta) < $tolerance) {
-                break;
-            }
-        }
-
-        $session['theta'] = $theta;
-
-        // Update SE = 1 / √(total information)
+        $responsesPayload = [];
         $totalInfo = 0.0;
 
         foreach ($session['responses'] as $response) {
             $item = collect($this->itemBank)->firstWhere('id', $response['id']);
+            if ($item) {
+                $responsesPayload[] = [
+                    'is_correct' => $response['correct'],
+                    'a_param' => $item['discrimination'],
+                    'b_param' => $item['difficulty'],
+                    'c_param' => $item['guessing'],
+                ];
+            }
+        }
 
+        // Delegate MLE calculation to the robust Grid Search IrtEngine
+        $theta = \App\Services\Psychometrics\IrtEngine::estimateTheta($responsesPayload);
+        $session['theta'] = $theta;
+
+        // Calculate Standard Error derived from Fisher Information
+        foreach ($session['responses'] as $response) {
+            $item = collect($this->itemBank)->firstWhere('id', $response['id']);
             if ($item) {
                 $totalInfo += $this->calculateInformation($item, $theta);
             }

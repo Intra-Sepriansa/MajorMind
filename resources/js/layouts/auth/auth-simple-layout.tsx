@@ -54,10 +54,10 @@ export default function AuthSimpleLayout({
     }, [activeHeroIndex, isDeletingHero, typedHeroText]);
 
     return (
-        <div className="relative min-h-svh overflow-hidden bg-[#05070b] text-white">
+        <div className="relative min-h-svh overflow-hidden bg-[linear-gradient(160deg,#0a0118_0%,#030008_54%,#060010_100%)] text-white">
             <div className="relative grid min-h-svh lg:h-svh lg:grid-cols-[minmax(0,1.05fr)_minmax(420px,0.95fr)]">
-                <div className="relative hidden overflow-hidden border-r border-white/8 lg:flex">
-                    <div className="absolute inset-0 bg-[linear-gradient(160deg,#06080d_0%,#05070b_54%,#0a1220_100%)]" />
+                <div className="relative hidden overflow-hidden lg:flex">
+                    {/* Unified background from parent */}
 
                     <div className="relative z-10 grid h-full w-full grid-rows-[auto_1fr] px-8 pt-8 pb-8 xl:px-10 xl:pt-10 xl:pb-10">
                         <div className="pb-6 xl:pb-8">
@@ -136,24 +136,34 @@ export default function AuthSimpleLayout({
 
                         <div className="flex min-h-0 items-stretch justify-center">
                             <div className="w-full max-w-md">
+                                {/* Purple glow wrapper */}
                                 <div
-                                    className="rounded-[30px] border border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.08),rgba(255,255,255,0.03))] px-8 py-8 shadow-[0_20px_80px_rgba(0,0,0,0.35)] backdrop-blur-2xl xl:px-10 xl:py-10"
-                                    style={{ height: desktopPanelHeight }}
+                                    className="relative rounded-[32px] p-[1.5px]"
+                                    style={{
+                                        background: 'linear-gradient(160deg, rgba(207,158,255,0.45), rgba(207,158,255,0.08) 40%, rgba(207,158,255,0.04) 60%, rgba(207,158,255,0.35))',
+                                        boxShadow: '0 0 60px rgba(207,158,255,0.08), 0 0 120px rgba(207,158,255,0.04)',
+                                    }}
                                 >
-                                    <div className="mb-6 space-y-3 xl:mb-8">
-                                        <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-[#ff2d20]/10 px-3 py-1.5 text-[11px] tracking-[0.26em] text-[#ffb4ae] uppercase">
-                                            Akses aman
+                                    <div
+                                        className="rounded-[30px] bg-[linear-gradient(180deg,rgba(255,255,255,0.06),rgba(255,255,255,0.02))] px-8 py-8 shadow-[0_20px_80px_rgba(0,0,0,0.35)] backdrop-blur-2xl xl:px-10 xl:py-10"
+                                        style={{
+                                            minHeight: desktopPanelHeight,
+                                            background: 'linear-gradient(180deg, rgba(12,4,28,0.97), rgba(6,0,16,0.99))',
+                                        }}
+                                    >
+                                        <div className="mb-6 space-y-3 xl:mb-8">
+                                            
+                                            <h1 className="text-[2.35rem] font-semibold leading-[1.05] tracking-[-0.05em] text-white xl:text-3xl">
+                                                {title}
+                                            </h1>
+                                            {description ? (
+                                                <p className="text-sm leading-7 text-slate-400">
+                                                    {description}
+                                                </p>
+                                            ) : null}
                                         </div>
-                                        <h1 className="text-[2.35rem] font-semibold leading-[1.05] tracking-[-0.05em] text-white xl:text-3xl">
-                                            {title}
-                                        </h1>
-                                        {description ? (
-                                            <p className="text-sm leading-7 text-slate-400">
-                                                {description}
-                                            </p>
-                                        ) : null}
+                                        {children}
                                     </div>
-                                    {children}
                                 </div>
                             </div>
                         </div>

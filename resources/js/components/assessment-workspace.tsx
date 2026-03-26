@@ -1823,8 +1823,8 @@ export function AssessmentWorkspace({
                 />
             </section>
 
-            {/* History + Legacy Explainability + Comparison */}
-            <section className="grid items-start gap-6 xl:grid-cols-[minmax(320px,0.72fr)_minmax(0,1.28fr)]">
+            {/* History */}
+            <section className="grid items-start gap-6">
                 <AssessmentHistoryPanel
                     historyItems={historyItems}
                     historyMeta={historyMeta}
@@ -1838,32 +1838,9 @@ export function AssessmentWorkspace({
                     }
                     formatSessionTime={formatSessionTime}
                 />
-
-                <div className="grid gap-6">
-                    <AssessmentExplainabilityPanel
-                        explainabilityItems={explainabilityItems}
-                        whyThisMajor={whyThisMajor}
-                        onExport={() => void handleDownloadPdf(detailAssessment)}
-                        formatPercent={formatPercent}
-                    />
-
-                    <AssessmentComparisonPanel
-                        detailAssessment={detailAssessment}
-                        comparisonAssessment={comparisonAssessment}
-                        criteriaComparisonRows={criteriaComparisonRows}
-                        rankingComparisonRows={rankingComparisonRows}
-                        loadingComparison={loadingComparison}
-                        onExportOpened={() =>
-                            void handleDownloadPdf(detailAssessment)
-                        }
-                        onExportCompared={() =>
-                            void handleDownloadPdf(detailAssessment, comparisonAssessment)
-                        }
-                        formatPercent={formatPercent}
-                        formatSessionTime={formatSessionTime}
-                    />
-                </div>
             </section>
+
+
             </>
             ) : null}
         </div>
