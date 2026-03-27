@@ -1083,8 +1083,8 @@ export function AssessmentWorkspace({
 
     const shellClassName =
         mode === 'public'
-            ? 'mx-auto flex w-full max-w-7xl flex-col gap-8 px-4 py-6 md:px-6 md:py-8 xl:px-8'
-            : 'mx-auto flex w-full max-w-7xl flex-col gap-8 px-4 py-6 lg:px-6 lg:py-8';
+            ? 'flex w-full flex-col gap-8 px-4 py-6 lg:px-6 lg:py-8'
+            : 'flex w-full flex-col gap-8 px-4 py-6 lg:px-6 lg:py-8';
     const isAssessmentView = view === 'assessment';
     const isDashboardView = view === 'dashboard';
 

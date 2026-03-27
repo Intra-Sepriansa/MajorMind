@@ -99,7 +99,7 @@ export function AppHeader({ breadcrumbs = [] }: Props) {
     return (
         <>
             <header className="sticky top-0 z-40 border-b border-white/8 bg-[#070a10]/92 backdrop-blur-xl">
-                <div className="mx-auto flex h-[4.5rem] w-full max-w-7xl items-center gap-4 px-4 lg:px-6">
+                <div className="flex h-[4.5rem] w-full items-center gap-4 px-4 lg:px-6">
                     <div className="flex items-center gap-3">
                         <div className="lg:hidden">
                             <Sheet>
@@ -203,7 +203,7 @@ export function AppHeader({ breadcrumbs = [] }: Props) {
 
             {breadcrumbs.length > 0 ? (
                 <div className="border-b border-white/8 bg-[#0b0e14]">
-                    <div className="mx-auto flex h-12 w-full max-w-7xl items-center px-4 text-sm text-slate-400 lg:px-6">
+                    <div className="flex h-12 w-full items-center px-4 text-sm text-slate-400 lg:px-6">
                         <Breadcrumbs breadcrumbs={breadcrumbs} />
                     </div>
                 </div>
