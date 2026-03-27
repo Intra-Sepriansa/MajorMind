@@ -12,9 +12,33 @@ import {
     Target,
     Zap,
 } from 'lucide-react';
-import { useState } from 'react';
+import { useCallback, useRef, useState } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+
+function useSpotlight() {
+    const ref = useRef<HTMLDivElement>(null);
+    const [style, setStyle] = useState<React.CSSProperties>({});
+    const [isHovered, setIsHovered] = useState(false);
+
+    const onMouseMove = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
+        if (!ref.current) return;
+        const rect = ref.current.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+        setStyle({
+            background: `radial-gradient(120px circle at ${x}px ${y}px, rgba(255,45,32,0.35), transparent 70%)`,
+        });
+    }, []);
+
+    const onMouseEnter = useCallback(() => setIsHovered(true), []);
+    const onMouseLeave = useCallback(() => {
+        setIsHovered(false);
+        setStyle({});
+    }, []);
+
+    return { ref, style, isHovered, onMouseMove, onMouseEnter, onMouseLeave };
+}
 
 type AssessmentOnboardingProps = {
     onContinue: () => void;
@@ -88,6 +112,7 @@ const privacyItems = [
 
 export function AssessmentOnboarding({ onContinue }: AssessmentOnboardingProps) {
     const [agreed, setAgreed] = useState(false);
+    const spotlight = useSpotlight();
 
     return (
         <div className="onboarding-root space-y-8">
@@ -110,9 +135,28 @@ export function AssessmentOnboarding({ onContinue }: AssessmentOnboardingProps) 
                     </div>
 
                     <div className="relative px-6 py-12 text-center sm:px-12 sm:py-16">
-                        {/* Animated icon */}
-                        <div className="hero-icon mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-3xl border border-[#ff2d20]/20 bg-gradient-to-br from-[#ff2d20]/20 to-[#ff2d20]/5 shadow-[0_0_60px_rgba(255,45,32,0.2)]">
-                            <Zap className="h-9 w-9 text-[#ff2d20]" />
+                        {/* Animated icon (Spotlight enabled) */}
+                        <div
+                            ref={spotlight.ref}
+                            onMouseMove={spotlight.onMouseMove}
+                            onMouseEnter={spotlight.onMouseEnter}
+                            onMouseLeave={spotlight.onMouseLeave}
+                            className={`hero-icon relative mx-auto mb-6 flex h-20 w-20 items-center justify-center overflow-hidden rounded-3xl border transition-all duration-300 ${
+                                spotlight.isHovered
+                                    ? 'border-[#ff2d20]/40 bg-[#ff2d20]/10 shadow-[0_0_80px_rgba(255,45,32,0.3)]'
+                                    : 'border-[#ff2d20]/20 bg-gradient-to-br from-[#ff2d20]/20 to-[#ff2d20]/5 shadow-[0_0_60px_rgba(255,45,32,0.2)]'
+                            }`}
+                        >
+                            {/* Spotlight glow layer */}
+                            <div
+                                className="pointer-events-none absolute inset-0 z-0 opacity-0 transition-opacity duration-300"
+                                style={{
+                                    ...spotlight.style,
+                                    opacity: spotlight.isHovered ? 1 : 0,
+                                }}
+                            />
+                            {/* Base Zap Icon */}
+                            <Zap className="relative z-10 h-9 w-9 text-[#ff2d20]" />
                         </div>
 
                         {/* Badge */}
