@@ -30,7 +30,7 @@ export default function Assessment() {
                     />
                 </Head>
 
-                <div className="relative min-h-full overflow-hidden bg-[#0b0e14] text-white">
+                <div className="relative min-h-full overflow-x-clip bg-[#0b0e14] text-white">
                     <div className="pointer-events-none absolute inset-0">
                         <div className="absolute top-[-8%] left-[-10%] h-80 w-80 rounded-full bg-[#ff2d20]/18 blur-3xl" />
                         <div className="absolute top-1/3 right-[-8%] h-96 w-96 rounded-full bg-[#ff2d20]/10 blur-3xl" />
@@ -55,7 +55,7 @@ export default function Assessment() {
                 />
             </Head>
 
-            <div className="relative min-h-screen overflow-hidden bg-[#0b0e14] text-white">
+            <div className="relative min-h-screen overflow-x-clip bg-[#0b0e14] text-white">
                 <div className="pointer-events-none absolute inset-0">
                     <div className="absolute top-[-10%] left-[-8%] h-96 w-96 rounded-full bg-[#ff2d20]/18 blur-3xl" />
                     <div className="absolute top-1/4 right-[-10%] h-[28rem] w-[28rem] rounded-full bg-[#ff2d20]/10 blur-3xl" />

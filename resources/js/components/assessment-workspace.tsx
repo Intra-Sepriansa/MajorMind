@@ -380,8 +380,8 @@ function RadarProfile({
             .join(' ');
 
     return (
-        <div className="grid gap-5 lg:grid-cols-[180px_1fr]">
-            <svg viewBox="0 0 200 200" className="mx-auto h-44 w-44">
+        <div className="grid gap-5 xl:grid-cols-[180px_1fr] lg:grid-cols-2 grid-cols-1 items-center">
+            <svg viewBox="0 0 200 200" className="mx-auto h-44 w-44 shrink-0">
                 {[25, 50, 75, 100].map((ring) => (
                     <polygon
                         key={ring}
@@ -1083,14 +1083,14 @@ export function AssessmentWorkspace({
 
     const shellClassName =
         mode === 'public'
-            ? 'mx-auto flex w-full max-w-[1560px] flex-col gap-8 px-4 py-6 md:px-6 md:py-8 xl:px-8'
-            : 'mx-auto flex w-full max-w-[1560px] flex-col gap-8 p-4 md:p-6 xl:p-8';
+            ? 'mx-auto flex w-full max-w-7xl flex-col gap-8 px-4 py-6 md:px-6 md:py-8 xl:px-8'
+            : 'mx-auto flex w-full max-w-7xl flex-col gap-8 px-4 py-6 lg:px-6 lg:py-8';
     const isAssessmentView = view === 'assessment';
     const isDashboardView = view === 'dashboard';
 
     return (
         <div className={shellClassName}>
-            <section className="grid items-start gap-6 rounded-[32px] border border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.04),rgba(255,255,255,0.02))] p-6 shadow-[0_32px_120px_rgba(0,0,0,0.35)] backdrop-blur xl:grid-cols-[minmax(0,1.1fr)_420px] xl:p-8">
+            <section className="grid items-start gap-6 rounded-[32px] border border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.04),rgba(255,255,255,0.02))] p-6 shadow-[0_32px_120px_rgba(0,0,0,0.35)] backdrop-blur lg:grid-cols-[minmax(0,1fr)_minmax(280px,380px)] xl:p-8">
                 <div className="space-y-6">
                     <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.04] px-4 py-2 text-xs tracking-[0.32em] text-slate-300 uppercase">
                         <Sparkles className="h-3.5 w-3.5 text-[#ff2d20]" />
@@ -1565,7 +1565,7 @@ export function AssessmentWorkspace({
                 </AssessmentWizard>
 
                 <Card className="rounded-[30px] border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.035),rgba(255,255,255,0.02))] py-0 shadow-[0_24px_80px_rgba(0,0,0,0.22)]">
-                    <CardContent className="grid items-stretch gap-5 px-6 py-6 lg:grid-cols-[minmax(0,1.1fr)_200px_minmax(0,0.9fr)]">
+                    <CardContent className="grid items-stretch gap-5 px-6 py-6 lg:grid-cols-[minmax(0,1fr)_minmax(180px,220px)_minmax(0,1fr)]">
                         <div className="flex h-full flex-col justify-between space-y-4 rounded-[28px] border border-white/8 bg-[#000000]/78 p-5">
                             <div className="text-xs tracking-[0.3em] text-slate-500 uppercase">
                                 Top Recommended Major

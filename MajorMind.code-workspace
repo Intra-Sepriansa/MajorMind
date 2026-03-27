@@ -1,0 +1,13 @@
+{
+	"folders": [
+		{
+			"path": "."
+		},
+		{
+			"path": "../TPLK004"
+		}
+	],
+	"settings": {
+		"kiroAgent.configureMCP": "Disabled"
+	}
+}
