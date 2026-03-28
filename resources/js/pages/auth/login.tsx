@@ -93,7 +93,7 @@ export default function Login({
                                     </Label>
                                     {canResetPassword && (
                                         <TextLink
-                                            href={request()}
+                                            href={request().url}
                                             className="ml-auto text-sm text-[#ffb4ae] hover:text-white"
                                             tabIndex={5}
                                         >
@@ -188,7 +188,7 @@ export default function Login({
                         {canRegister && (
                             <div className="rounded-2xl border border-white/8 bg-white/[0.03] px-4 py-4 text-center text-sm text-slate-400">
                                 Belum punya akun?{' '}
-                                <TextLink href={register()} tabIndex={5} className="text-[#ffb4ae] hover:text-white">
+                                <TextLink href={register().url} tabIndex={5} className="text-[#ffb4ae] hover:text-white">
                                     Buat akun
                                 </TextLink>
                             </div>

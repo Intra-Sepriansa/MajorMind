@@ -115,7 +115,7 @@ export default function Profile({
                                             <p className="text-sm text-amber-200">
                                                 Your email address is unverified.{' '}
                                                 <Link
-                                                    href={send()}
+                                                    href={send().url}
                                                     as="button"
                                                     className="font-semibold text-amber-500 underline decoration-amber-500/30 underline-offset-4 hover:decoration-amber-500"
                                                 >

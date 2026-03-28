@@ -86,14 +86,14 @@ export default function Assessment() {
 
                         <div className="flex items-center gap-3">
                             <Link
-                                href={home()}
+                                href={home().url}
                                 className="inline-flex h-11 items-center gap-2 rounded-full border border-white/10 px-5 text-sm text-slate-300 transition hover:border-white/20 hover:bg-white/[0.04]"
                             >
                                 <ArrowLeft className="h-4 w-4" />
                                 Back Home
                             </Link>
                             <Link
-                                href={login()}
+                                href={login().url}
                                 className="inline-flex h-11 items-center rounded-full border border-[#ff2d20]/40 bg-[#ff2d20] px-5 text-sm font-medium text-black transition hover:bg-[#ff584d]"
                             >
                                 Login for synced dashboard

@@ -1174,14 +1174,14 @@ export function AssessmentWorkspace({
                             </div>
                             <div className="mt-4 flex flex-wrap gap-3">
                                 <Link
-                                    href={login()}
+                                    href={login().url}
                                     className="inline-flex h-11 items-center gap-2 rounded-full border border-white/10 bg-white/90 px-5 text-sm font-medium text-black transition hover:bg-white"
                                 >
                                     <LogIn className="h-4 w-4" />
                                     Login & Claim
                                 </Link>
                                 <Link
-                                    href={register()}
+                                    href={register().url}
                                     className="inline-flex h-11 items-center gap-2 rounded-full border border-[#ff2d20]/40 bg-[#ff2d20] px-5 text-sm font-medium text-black transition hover:bg-[#ff584d]"
                                 >
                                     <UserPlus className="h-4 w-4" />
@@ -1203,7 +1203,7 @@ export function AssessmentWorkspace({
                             </div>
                             <div className="mt-4 flex flex-wrap gap-3">
                                 <Link
-                                    href={dashboard()}
+                                    href={dashboard().url}
                                     className="inline-flex h-11 items-center gap-2 rounded-full border border-emerald-400/30 bg-emerald-300 px-5 text-sm font-medium text-black transition hover:bg-emerald-200"
                                 >
                                     <LogIn className="h-4 w-4" />
@@ -1276,7 +1276,7 @@ export function AssessmentWorkspace({
                                 </div>
                             </div>
                             <Link
-                                href={assessmentRoute()}
+                                href={assessmentRoute().url}
                                 className="inline-flex h-11 items-center justify-center rounded-full border border-[#ff2d20]/40 bg-[#ff2d20] px-5 text-sm font-medium text-black transition hover:bg-[#ff584d]"
                             >
                                 Create new assessment

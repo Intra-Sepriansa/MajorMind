@@ -107,11 +107,11 @@ export default function HeroSection({ canRegister = true }: { canRegister?: bool
                     </div>
                     <nav className="flex items-center gap-3">
                         {auth.user ? (
-                            <Link href={dashboard()} className="inline-flex h-10 items-center rounded-full border border-[#ff2d20]/40 bg-[#ff2d20] px-5 text-sm font-medium text-black transition hover:bg-[#ff584d]">Open Dashboard</Link>
+                            <Link href={dashboard().url} className="inline-flex h-10 items-center rounded-full border border-[#ff2d20]/40 bg-[#ff2d20] px-5 text-sm font-medium text-black transition hover:bg-[#ff584d]">Open Dashboard</Link>
                         ) : (
                             <>
-                                <Link href={login()} className="inline-flex h-10 items-center rounded-full border border-white/10 px-5 text-sm text-slate-300 transition hover:border-white/20 hover:bg-white/[0.04]">Log in</Link>
-                                {canRegister && <Link href={register()} className="inline-flex h-10 items-center rounded-full border border-[#ff2d20]/40 bg-[#ff2d20] px-5 text-sm font-medium text-black transition hover:bg-[#ff584d]">Create account</Link>}
+                                <Link href={login().url} className="inline-flex h-10 items-center rounded-full border border-white/10 px-5 text-sm text-slate-300 transition hover:border-white/20 hover:bg-white/[0.04]">Log in</Link>
+                                {canRegister && <Link href={register().url} className="inline-flex h-10 items-center rounded-full border border-[#ff2d20]/40 bg-[#ff2d20] px-5 text-sm font-medium text-black transition hover:bg-[#ff584d]">Create account</Link>}
                             </>
                         )}
                     </nav>

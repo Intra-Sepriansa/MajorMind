@@ -203,7 +203,7 @@ export default function Register() {
 
                         <div className="rounded-2xl border border-white/8 bg-white/[0.03] px-4 py-4 text-center text-sm text-slate-400">
                             Sudah punya akun?{' '}
-                            <TextLink href={login()} tabIndex={7} className="text-[#ffb4ae] hover:text-white">
+                            <TextLink href={login().url} tabIndex={7} className="text-[#ffb4ae] hover:text-white">
                                 Masuk
                             </TextLink>
                         </div>

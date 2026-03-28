@@ -62,7 +62,7 @@ export default function AuthSimpleLayout({
                     <div className="relative z-10 grid h-full w-full grid-rows-[auto_1fr] px-8 pt-8 pb-8 xl:px-10 xl:pt-10 xl:pb-10">
                         <div className="pb-6 xl:pb-8">
                             <Link
-                                href={home()}
+                                href={home().url}
                                 className="inline-block"
                             >
                                 <img
@@ -120,7 +120,7 @@ export default function AuthSimpleLayout({
                 <div className="relative px-6 py-8 md:px-10 lg:py-8">
                     <div className="grid h-full w-full justify-center lg:grid-rows-[auto_1fr]">
                         <Link
-                            href={home()}
+                            href={home().url}
                             className="mb-8 inline-block lg:hidden"
                         >
                             <img

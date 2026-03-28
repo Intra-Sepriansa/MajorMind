@@ -157,7 +157,7 @@ export function AppHeader({ breadcrumbs = [] }: Props) {
 
                     <div className="ml-auto flex items-center gap-3">
                         <Link
-                            href={home()}
+                            href={home().url}
                             className="hidden h-10 items-center rounded-full border border-white/10 px-4 text-sm text-slate-300 transition hover:border-white/20 hover:bg-white/[0.04] hover:text-white sm:inline-flex"
                         >
                             Landing

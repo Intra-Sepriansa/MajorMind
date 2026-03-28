@@ -63,7 +63,7 @@ export default function ForgotPassword({ status }: { status?: string }) {
 
                 <div className="rounded-2xl border border-white/8 bg-white/[0.03] px-4 py-4 text-center text-sm text-slate-400">
                     Kembali ke{' '}
-                    <TextLink href={login()} className="text-[#ffb4ae] hover:text-white">
+                    <TextLink href={login().url} className="text-[#ffb4ae] hover:text-white">
                         masuk
                     </TextLink>
                 </div>
