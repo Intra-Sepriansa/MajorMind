@@ -232,9 +232,212 @@ function CrGaugeMini({ cr }: { cr: number }) {
     );
 }
 
-/* ---------- Phase Navigator ---------- */
+/* ---------- Phase Navigator (Advanced Animated) ---------- */
+
+/* Unique SVG icon per phase */
+function PhaseIcon({ phaseId, done, index }: { phaseId: number; done: boolean; index: number }) {
+    const color = done ? '#ff2d20' : 'rgba(255,255,255,0.25)';
+    const glowId = `phaseGlow-${phaseId}`;
+    const pulseId = `phasePulse-${phaseId}`;
+
+    return (
+        <svg viewBox="0 0 48 48" className="h-10 w-10 sm:h-12 sm:w-12" aria-hidden="true">
+            <defs>
+                <filter id={glowId} x="-50%" y="-50%" width="200%" height="200%">
+                    <feGaussianBlur in="SourceGraphic" stdDeviation={done ? "3" : "0"} result="blur" />
+                    <feMerge><feMergeNode in="blur" /><feMergeNode in="SourceGraphic" /></feMerge>
+                </filter>
+                <radialGradient id={`${pulseId}Grad`} cx="50%" cy="50%" r="50%">
+                    <stop offset="0%" stopColor={done ? '#ff2d20' : '#ffffff'} stopOpacity={done ? 0.25 : 0.05} />
+                    <stop offset="100%" stopColor={done ? '#ff2d20' : '#ffffff'} stopOpacity="0" />
+                </radialGradient>
+            </defs>
+
+            {/* Ambient pulse ring (only when done) */}
+            {done && (
+                <circle cx="24" cy="24" r="22" fill="none" stroke="#ff2d20" strokeWidth="1" opacity="0.3">
+                    <animate attributeName="r" values="18;23;18" dur="2.5s" repeatCount="indefinite" />
+                    <animate attributeName="opacity" values="0.4;0.1;0.4" dur="2.5s" repeatCount="indefinite" />
+                </circle>
+            )}
+
+            {/* Background circle */}
+            <circle cx="24" cy="24" r="18" fill={done ? 'rgba(255,45,32,0.08)' : 'rgba(255,255,255,0.02)'} stroke={done ? 'rgba(255,45,32,0.3)' : 'rgba(255,255,255,0.08)'} strokeWidth="1.5" />
+
+            {/* Phase-specific animated icon */}
+            <g filter={`url(#${glowId})`} style={{ animationDelay: `${index * 0.15}s` }}>
+                {phaseId === 1 && (
+                    /* Profiling: Brain neural network with pulsing nodes */
+                    <g stroke={color} fill="none" strokeWidth="1.5" strokeLinecap="round">
+                        {/* Central brain shape */}
+                        <path d="M20 16c-3 0-5 2-5 5 0 2 1 3 2 4-1 1-2 3-2 4 0 3 2 5 5 5" opacity="0.8">
+                            {done && <animate attributeName="opacity" values="0.6;1;0.6" dur="2s" repeatCount="indefinite" />}
+                        </path>
+                        <path d="M28 16c3 0 5 2 5 5 0 2-1 3-2 4 1 1 2 3 2 4 0 3-2 5-5 5" opacity="0.8">
+                            {done && <animate attributeName="opacity" values="0.6;1;0.6" dur="2s" repeatCount="indefinite" begin="0.3s" />}
+                        </path>
+                        <line x1="20" y1="24" x2="28" y2="24" />
+                        {/* Neural nodes */}
+                        <circle cx="18" cy="20" r="1.5" fill={color}>
+                            {done && <animate attributeName="r" values="1.5;2.5;1.5" dur="1.5s" repeatCount="indefinite" />}
+                        </circle>
+                        <circle cx="30" cy="20" r="1.5" fill={color}>
+                            {done && <animate attributeName="r" values="1.5;2.5;1.5" dur="1.5s" repeatCount="indefinite" begin="0.5s" />}
+                        </circle>
+                        <circle cx="24" cy="17" r="1.5" fill={color}>
+                            {done && <animate attributeName="r" values="1.5;2.5;1.5" dur="1.5s" repeatCount="indefinite" begin="1s" />}
+                        </circle>
+                        <circle cx="24" cy="31" r="1.5" fill={color}>
+                            {done && <animate attributeName="r" values="1.5;2.5;1.5" dur="1.5s" repeatCount="indefinite" begin="0.7s" />}
+                        </circle>
+                        {/* Neural connections */}
+                        <line x1="18" y1="20" x2="24" y2="17" strokeDasharray="2 2" opacity="0.5" />
+                        <line x1="30" y1="20" x2="24" y2="17" strokeDasharray="2 2" opacity="0.5" />
+                        <line x1="18" y1="20" x2="24" y2="31" strokeDasharray="2 2" opacity="0.5" />
+                        <line x1="30" y1="20" x2="24" y2="31" strokeDasharray="2 2" opacity="0.5" />
+                    </g>
+                )}
+
+                {phaseId === 2 && (
+                    /* AHP: Oscillating balance scale */
+                    <g stroke={color} fill="none" strokeWidth="1.5" strokeLinecap="round">
+                        {/* Fulcrum triangle */}
+                        <polygon points="24,14 21,18 27,18" fill={done ? 'rgba(255,45,32,0.2)' : 'rgba(255,255,255,0.05)'} stroke={color} strokeWidth="1" />
+                        {/* Beam */}
+                        <line x1="14" y1="22" x2="34" y2="22" strokeWidth="2">
+                            {done && (
+                                <animateTransform attributeName="transform" type="rotate" values="-3 24 18;3 24 18;-3 24 18" dur="3s" repeatCount="indefinite" />
+                            )}
+                        </line>
+                        {/* Left pan */}
+                        <g>
+                            {done && <animateTransform attributeName="transform" type="translate" values="0,0;0,2;0,0" dur="3s" repeatCount="indefinite" />}
+                            <line x1="14" y1="22" x2="14" y2="28" strokeWidth="1" />
+                            <path d="M10 28 Q12 32 14 32 Q16 32 18 28" strokeWidth="1.5" fill={done ? 'rgba(255,45,32,0.15)' : 'none'} />
+                        </g>
+                        {/* Right pan */}
+                        <g>
+                            {done && <animateTransform attributeName="transform" type="translate" values="0,0;0,-2;0,0" dur="3s" repeatCount="indefinite" />}
+                            <line x1="34" y1="22" x2="34" y2="28" strokeWidth="1" />
+                            <path d="M30 28 Q32 32 34 32 Q36 32 38 28" strokeWidth="1.5" fill={done ? 'rgba(255,45,32,0.15)' : 'none'} />
+                        </g>
+                        {/* Base */}
+                        <line x1="20" y1="35" x2="28" y2="35" strokeWidth="2" />
+                        <line x1="24" y1="18" x2="24" y2="35" strokeWidth="1.5" />
+                    </g>
+                )}
+
+                {phaseId === 3 && (
+                    /* CR: Shield with scanning verification line */
+                    <g stroke={color} fill="none" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="M24 14 L32 18 L32 26 C32 31 28 35 24 36 C20 35 16 31 16 26 L16 18 Z" fill={done ? 'rgba(255,45,32,0.1)' : 'rgba(255,255,255,0.02)'} />
+                        {/* Checkmark */}
+                        <polyline points="20,25 23,28 29,22" strokeWidth="2">
+                            {done && (
+                                <animate attributeName="stroke-dashoffset" values="20;0" dur="0.8s" fill="freeze" />
+                            )}
+                        </polyline>
+                        {/* Scanning line */}
+                        {done && (
+                            <line x1="16" y1="24" x2="32" y2="24" stroke="#ff2d20" strokeWidth="1" opacity="0.4">
+                                <animate attributeName="y1" values="16;36;16" dur="2.5s" repeatCount="indefinite" />
+                                <animate attributeName="y2" values="16;36;16" dur="2.5s" repeatCount="indefinite" />
+                                <animate attributeName="opacity" values="0.5;0.1;0.5" dur="2.5s" repeatCount="indefinite" />
+                            </line>
+                        )}
+                    </g>
+                )}
+
+                {phaseId === 4 && (
+                    /* Normalize: Matrix grid with cascading fill */
+                    <g stroke={color} fill="none" strokeWidth="1">
+                        {/* 3x3 matrix cells */}
+                        {[0, 1, 2].map(row =>
+                            [0, 1, 2].map(col => {
+                                const x = 16 + col * 6;
+                                const y = 16 + row * 6;
+                                const delay = (row * 3 + col) * 0.15;
+                                return (
+                                    <rect
+                                        key={`${row}-${col}`}
+                                        x={x} y={y} width="5" height="5" rx="0.8"
+                                        fill={done ? '#ff2d20' : 'rgba(255,255,255,0.05)'}
+                                        stroke={done ? 'rgba(255,45,32,0.5)' : 'rgba(255,255,255,0.1)'}
+                                    >
+                                        {done && (
+                                            <animate attributeName="opacity" values="0.3;1;0.3" dur="2s" repeatCount="indefinite" begin={`${delay}s`} />
+                                        )}
+                                    </rect>
+                                );
+                            })
+                        )}
+                        {/* Arrow indicating normalization flow */}
+                        <path d="M36 20 L40 24 L36 28" strokeWidth="1.5" opacity={done ? 0.7 : 0.2}>
+                            {done && <animate attributeName="opacity" values="0.3;0.9;0.3" dur="1.5s" repeatCount="indefinite" />}
+                        </path>
+                    </g>
+                )}
+
+                {phaseId === 5 && (
+                    /* Distance: Radar concentric rings with sweeping beam */
+                    <g stroke={color} fill="none" strokeWidth="1">
+                        {/* Concentric rings */}
+                        {[6, 10, 14].map((r, idx) => (
+                            <circle key={r} cx="24" cy="24" r={r} opacity={done ? 0.3 + idx * 0.1 : 0.15} strokeDasharray="3 2">
+                                {done && <animate attributeName="opacity" values={`${0.15 + idx * 0.1};${0.4 + idx * 0.1};${0.15 + idx * 0.1}`} dur="2s" repeatCount="indefinite" begin={`${idx * 0.3}s`} />}
+                            </circle>
+                        ))}
+                        {/* Center dot */}
+                        <circle cx="24" cy="24" r="2" fill={color}>
+                            {done && <animate attributeName="r" values="1.5;3;1.5" dur="2s" repeatCount="indefinite" />}
+                        </circle>
+                        {/* Sweeping beam */}
+                        {done && (
+                            <line x1="24" y1="24" x2="24" y2="10" stroke="#ff2d20" strokeWidth="1.5" opacity="0.5">
+                                <animateTransform attributeName="transform" type="rotate" from="0 24 24" to="360 24 24" dur="4s" repeatCount="indefinite" />
+                                <animate attributeName="opacity" values="0.6;0.2;0.6" dur="2s" repeatCount="indefinite" />
+                            </line>
+                        )}
+                        {/* Data points */}
+                        <circle cx="18" cy="18" r="1.5" fill={color} opacity={done ? 0.8 : 0.2} />
+                        <circle cx="30" cy="20" r="1.5" fill={color} opacity={done ? 0.8 : 0.2} />
+                        <circle cx="20" cy="30" r="1.5" fill={color} opacity={done ? 0.8 : 0.2} />
+                    </g>
+                )}
+
+                {phaseId === 6 && (
+                    /* Ranking: Trophy with crown glow */
+                    <g stroke={color} fill="none" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                        {/* Trophy cup */}
+                        <path d="M18 17 L18 24 C18 28 21 30 24 30 C27 30 30 28 30 24 L30 17 Z" fill={done ? 'rgba(255,45,32,0.15)' : 'rgba(255,255,255,0.03)'} />
+                        {/* Handles */}
+                        <path d="M18 19 C15 19 14 21 14 23 C14 25 16 27 18 26" />
+                        <path d="M30 19 C33 19 34 21 34 23 C34 25 32 27 30 26" />
+                        {/* Base */}
+                        <line x1="21" y1="33" x2="27" y2="33" strokeWidth="2" />
+                        <line x1="24" y1="30" x2="24" y2="33" />
+                        {/* Star / Crown sparkle */}
+                        {done && (
+                            <g fill="#ff2d20" stroke="none">
+                                <polygon points="24,13 25,15 27,15 25.5,16.5 26,18.5 24,17.5 22,18.5 22.5,16.5 21,15 23,15" opacity="0.9">
+                                    <animate attributeName="opacity" values="0.5;1;0.5" dur="1.8s" repeatCount="indefinite" />
+                                    <animateTransform attributeName="transform" type="scale" values="0.9;1.1;0.9" dur="1.8s" repeatCount="indefinite" additive="sum" />
+                                </polygon>
+                            </g>
+                        )}
+                        {/* Number 1 inside */}
+                        <text x="24" y="26" textAnchor="middle" fill={color} fontSize="8" fontWeight="700" stroke="none">1</text>
+                    </g>
+                )}
+            </g>
+        </svg>
+    );
+}
 
 function PhaseNavigator({ completedPhases }: { completedPhases: number }) {
+    const [mounted, setMounted] = useState(false);
+    useEffect(() => { setMounted(true); }, []);
+
     return (
         <div className="grid grid-cols-6 gap-0">
             {phaseData.map((phase, i) => {
@@ -242,35 +445,43 @@ function PhaseNavigator({ completedPhases }: { completedPhases: number }) {
                 const isLast = i === phaseData.length - 1;
                 return (
                     <div key={phase.id} className="relative flex flex-col items-center">
-                        {/* Connecting line */}
+                        {/* === Connecting pipeline === */}
                         {!isLast && (
-                            <div className="absolute top-4 left-[calc(50%+16px)] right-0 h-[2px] z-0">
+                            <div className="absolute top-5 sm:top-6 left-[calc(50%+20px)] right-0 h-[2px] z-0 overflow-hidden">
                                 <div
                                     className={`h-full w-full ${
                                         i < completedPhases - 1
-                                            ? 'bg-gradient-to-r from-[#ff2d20] to-[#ff2d20]/60'
-                                            : 'bg-white/8'
+                                            ? 'bg-gradient-to-r from-[#ff2d20] to-[#ff2d20]/40'
+                                            : 'bg-white/[0.06]'
                                     }`}
                                 />
+                                {/* Energy particle flowing along the line */}
+                                {i < completedPhases - 1 && (
+                                    <div
+                                        className="absolute top-[-1px] h-[4px] w-6 rounded-full bg-gradient-to-r from-transparent via-[#ff6b5e] to-transparent"
+                                        style={{
+                                            animation: 'flowParticle 2s linear infinite',
+                                            animationDelay: `${i * 0.3}s`,
+                                        }}
+                                    />
+                                )}
                             </div>
                         )}
-                        {/* Step circle */}
+
+                        {/* === Phase node === */}
                         <Link
                             href="/insights"
-                            className="group relative z-10 flex flex-col items-center gap-2"
+                            className="group relative z-10 flex flex-col items-center gap-1"
+                            style={{
+                                opacity: mounted ? 1 : 0,
+                                transform: mounted ? 'translateY(0)' : 'translateY(12px)',
+                                transition: `opacity 0.6s ease ${i * 0.12}s, transform 0.6s ease ${i * 0.12}s`,
+                            }}
                         >
-                            <div
-                                className={`flex h-8 w-8 items-center justify-center rounded-full text-xs font-bold transition-all duration-300 ${
-                                    done
-                                        ? 'bg-[#ff2d20] text-white shadow-[0_0_16px_rgba(255,45,32,0.45)]'
-                                        : 'border border-white/15 bg-white/[0.03] text-slate-500 group-hover:border-white/25 group-hover:text-slate-300'
-                                }`}
-                            >
-                                {done ? <CheckCircle2 className="h-4 w-4" /> : phase.id}
-                            </div>
-                            <div className="text-center">
-                                <span className={`block text-[10px] font-medium tracking-wide sm:text-[11px] ${
-                                    done ? 'text-white' : 'text-slate-500 group-hover:text-slate-300'
+                            <PhaseIcon phaseId={phase.id} done={done} index={i} />
+                            <div className="text-center mt-0.5">
+                                <span className={`block text-[9px] font-semibold tracking-[0.08em] uppercase sm:text-[10px] transition-colors duration-300 ${
+                                    done ? 'text-white' : 'text-slate-600 group-hover:text-slate-400'
                                 }`}>
                                     {phase.name}
                                 </span>
@@ -279,6 +490,14 @@ function PhaseNavigator({ completedPhases }: { completedPhases: number }) {
                     </div>
                 );
             })}
+
+            {/* Inline keyframes for the energy particle */}
+            <style>{`
+                @keyframes flowParticle {
+                    0% { left: -10%; }
+                    100% { left: 110%; }
+                }
+            `}</style>
         </div>
     );
 }
