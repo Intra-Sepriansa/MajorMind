@@ -2,7 +2,7 @@ import { Head, Link, usePage } from '@inertiajs/react';
 import { ArrowLeft, BrainCircuit } from 'lucide-react';
 import { AssessmentWorkspace } from '@/components/assessment-workspace';
 import AppLayout from '@/layouts/app-layout';
-import { assessment, dashboard, home, login } from '@/routes';
+import { assessment, dashboard, home, login, register } from '@/routes';
 import type { BreadcrumbItem } from '@/types';
 
 const breadcrumbs: BreadcrumbItem[] = [
@@ -34,7 +34,7 @@ export default function Assessment() {
                     <div className="pointer-events-none absolute inset-0">
                         <div className="absolute top-[-8%] left-[-10%] h-80 w-80 rounded-full bg-[#ff2d20]/18 blur-3xl" />
                         <div className="absolute top-1/3 right-[-8%] h-96 w-96 rounded-full bg-[#ff2d20]/10 blur-3xl" />
-                        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.08),transparent_38%),linear-gradient(180deg,rgba(255,255,255,0.03),transparent_24%)]" />
+                        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.08),transparent_38%),linear-gradient(180deg,rgba(255,255,255,0.03),transparent_24%)] z-10" />
                     </div>
 
                     <div className="relative">
@@ -59,7 +59,7 @@ export default function Assessment() {
                 <div className="pointer-events-none absolute inset-0">
                     <div className="absolute top-[-10%] left-[-8%] h-96 w-96 rounded-full bg-[#ff2d20]/18 blur-3xl" />
                     <div className="absolute top-1/4 right-[-10%] h-[28rem] w-[28rem] rounded-full bg-[#ff2d20]/10 blur-3xl" />
-                    <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.08),transparent_35%),linear-gradient(180deg,rgba(255,255,255,0.03),transparent_20%)]" />
+                    <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.08),transparent_35%),linear-gradient(180deg,rgba(255,255,255,0.03),transparent_20%)] z-10" />
                 </div>
 
                 <div className="relative mx-auto flex min-h-screen w-full max-w-7xl flex-col px-6 py-6 lg:px-10">

@@ -19,6 +19,7 @@ import { AssessmentComparisonPanel } from '@/components/assessment/assessment-co
 import { AssessmentExplainabilityPanel } from '@/components/assessment/assessment-explainability-panel';
 import { AssessmentHistoryPanel } from '@/components/assessment/assessment-history-panel';
 import { AssessmentWizard } from '@/components/assessment/assessment-wizard';
+import AssessmentHeader3D from '@/components/assessment/assessment-header-3d';
 import { startTransition, useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
@@ -1090,8 +1091,10 @@ export function AssessmentWorkspace({
 
     return (
         <div className={shellClassName}>
-            <section className="grid items-start gap-6 rounded-[32px] border border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.04),rgba(255,255,255,0.02))] p-6 shadow-[0_32px_120px_rgba(0,0,0,0.35)] backdrop-blur lg:grid-cols-[minmax(0,1fr)_minmax(280px,380px)] xl:p-8">
-                <div className="space-y-6">
+            {!isDashboardView && (
+            <section className="relative overflow-hidden grid items-start gap-6 rounded-[32px] border border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.04),rgba(255,255,255,0.02))] p-6 shadow-[0_32px_120px_rgba(0,0,0,0.35)] backdrop-blur lg:grid-cols-[minmax(0,1fr)_minmax(280px,380px)] xl:p-8">
+                <AssessmentHeader3D />
+                <div className="relative z-10 space-y-6">
                     <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.04] px-4 py-2 text-xs tracking-[0.32em] text-slate-300 uppercase">
                         <Sparkles className="h-3.5 w-3.5 text-[#ff2d20]" />
                         {isAssessmentView
@@ -1108,8 +1111,8 @@ export function AssessmentWorkspace({
                             }}
                         >
                             {isAssessmentView
-                                ? 'Build Your Decision Model.'
-                                : 'Review the Decision Intelligence.'}
+                                ? 'Bangun Model Keputusan Anda.'
+                                : 'Tinjau Hasil Keputusan.'}
                         </h1>
                         <p className="max-w-2xl text-base leading-7 text-slate-400 md:text-lg">
                             {isAssessmentView
@@ -1122,7 +1125,7 @@ export function AssessmentWorkspace({
                         <Card className="rounded-[26px] border-white/10 bg-[#000000]/92 py-0 shadow-[inset_0_1px_0_rgba(255,255,255,0.06)]">
                             <CardContent className="px-5 py-5">
                                 <div className="text-xs tracking-[0.28em] text-slate-500 uppercase">
-                                    Criteria
+                                    Kriteria
                                 </div>
                                 <div className="mt-3 text-3xl font-semibold tracking-[-0.04em]">
                                     {criteria.length || '--'}
@@ -1132,7 +1135,7 @@ export function AssessmentWorkspace({
                         <Card className="rounded-[26px] border-white/10 bg-[#000000]/92 py-0 shadow-[inset_0_1px_0_rgba(255,255,255,0.06)]">
                             <CardContent className="px-5 py-5">
                                 <div className="text-xs tracking-[0.28em] text-slate-500 uppercase">
-                                    Consistency
+                                    Konsistensi
                                 </div>
                                 <div className="mt-3 text-3xl font-semibold tracking-[-0.04em]">
                                     {result
@@ -1144,7 +1147,7 @@ export function AssessmentWorkspace({
                         <Card className="rounded-[26px] border-white/10 bg-[#000000]/92 py-0 shadow-[inset_0_1px_0_rgba(255,255,255,0.06)]">
                             <CardContent className="px-5 py-5">
                                 <div className="text-xs tracking-[0.28em] text-slate-500 uppercase">
-                                    Confidence
+                                    Keyakinan
                                 </div>
                                 <div className="mt-3 text-3xl font-semibold tracking-[-0.04em]">
                                     {topRecommendation
@@ -1155,13 +1158,6 @@ export function AssessmentWorkspace({
                         </Card>
                     </div>
 
-                    {resumeLabel ? (
-                        <div className="rounded-2xl border border-white/8 bg-[#000000] px-4 py-3 text-sm text-slate-400">
-                            {loadingPrevious
-                                ? 'Syncing previous assessment...'
-                                : resumeLabel}
-                        </div>
-                    ) : null}
 
                     {isAssessmentView && mode === 'public' && result && !auth.user ? (
                         <div className="rounded-[24px] border border-[#ff2d20]/20 bg-[#ff2d20]/8 p-5">
@@ -1191,78 +1187,16 @@ export function AssessmentWorkspace({
                         </div>
                     ) : null}
 
-                    {isAssessmentView && mode === 'public' && result && auth.user ? (
-                        <div className="rounded-[24px] border border-emerald-500/20 bg-emerald-500/8 p-5">
-                            <div className="mb-2 text-xs tracking-[0.28em] text-emerald-200 uppercase">
-                                Synced Session
-                            </div>
-                            <div className="max-w-xl text-sm leading-7 text-slate-200">
-                                Kamu sudah login sebagai {auth.user.name}. Hasil
-                                assessment public ini otomatis tersimpan ke akun
-                                dan bisa langsung dibuka dari dashboard.
-                            </div>
-                            <div className="mt-4 flex flex-wrap gap-3">
-                                <Link
-                                    href={dashboard().url}
-                                    className="inline-flex h-11 items-center gap-2 rounded-full border border-emerald-400/30 bg-emerald-300 px-5 text-sm font-medium text-black transition hover:bg-emerald-200"
-                                >
-                                    <LogIn className="h-4 w-4" />
-                                    Open Dashboard
-                                </Link>
-                            </div>
-                        </div>
-                    ) : null}
+
                 </div>
 
-                {isAssessmentView ? (
-                    <Card className="overflow-hidden rounded-[30px] border-white/10 bg-[#000000]/96 py-0 shadow-[inset_0_1px_0_rgba(255,255,255,0.06),0_24px_80px_rgba(0,0,0,0.28)] xl:sticky xl:top-6">
-                        <CardContent className="px-0 py-0">
-                            <div className="flex items-center gap-2 border-b border-white/8 px-5 py-3">
-                                <span className="h-3 w-3 rounded-full bg-[#ff5f56]" />
-                                <span className="h-3 w-3 rounded-full bg-[#ffbd2e]" />
-                                <span className="h-3 w-3 rounded-full bg-[#27c93f]" />
-                                <span className="ml-2 text-xs tracking-[0.28em] text-slate-500 uppercase">
-                                    live_matrix.engine
-                                </span>
-                            </div>
-                            <div className="grid gap-5 p-5 font-mono text-sm">
-                                <div className="text-slate-500">
-                                    Pairwise matrix preview
+                {isAssessmentView ? null : (
+                    <div className="relative z-10">
+                        <Card className="rounded-[30px] border-white/10 bg-[#000000]/94 py-0 shadow-[0_24px_80px_rgba(0,0,0,0.28)] xl:sticky xl:top-6">
+                            <CardContent className="grid gap-4 px-5 py-5">
+                                <div className="text-xs tracking-[0.28em] text-slate-500 uppercase">
+                                    Workspace actions
                                 </div>
-                                <div className="grid gap-3">
-                                    {matrix.map((row, index) => (
-                                        <div
-                                            key={`matrix-${index}`}
-                                            className="grid grid-cols-4 gap-2"
-                                        >
-                                            {row.map((cell, cellIndex) => (
-                                                <div
-                                                    key={`cell-${index}-${cellIndex}`}
-                                                    className="rounded-xl border border-white/8 bg-white/[0.03] px-3 py-2 text-center text-slate-200"
-                                                >
-                                                    {cell.toFixed(3)}
-                                                </div>
-                                            ))}
-                                        </div>
-                                    ))}
-                                </div>
-                                <div className="rounded-2xl border border-[#ff2d20]/20 bg-[#ff2d20]/8 px-4 py-3 text-xs leading-6 text-slate-300">
-                                    Status:{' '}
-                                    {bootstrapping
-                                        ? 'loading criteria...'
-                                        : 'matrix synchronized'}
-                                    . Reciprocal entries diperbarui otomatis
-                                    saat slider digeser.
-                                </div>
-                            </div>
-                        </CardContent>
-                    </Card>
-                ) : (
-                    <Card className="rounded-[30px] border-white/10 bg-[#000000]/94 py-0 shadow-[0_24px_80px_rgba(0,0,0,0.28)] xl:sticky xl:top-6">
-                        <CardContent className="grid gap-4 px-5 py-5">
-                            <div className="text-xs tracking-[0.28em] text-slate-500 uppercase">
-                                Workspace actions
-                            </div>
                             <div className="rounded-[24px] border border-white/8 bg-white/[0.03] p-4">
                                 <div className="text-sm text-slate-500">
                                     Latest recommendation
@@ -1303,8 +1237,10 @@ export function AssessmentWorkspace({
                             </div>
                         </CardContent>
                     </Card>
+                    </div>
                 )}
             </section>
+            )}
 
             {isAssessmentView ? (
             <section className="grid gap-6">

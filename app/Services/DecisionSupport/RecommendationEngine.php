@@ -16,28 +16,45 @@ use Illuminate\Validation\ValidationException;
 class RecommendationEngine
 {
     /**
-     * Hard constraint thresholds for pre-filtering.
+     * Composite scoring formula weights.
+     * TOPSIS (decision matrix) + Profile Matching (gap analysis) + RIASEC Affinity (cosine similarity).
+     */
+    private const TOPSIS_WEIGHT = 0.60;
+    private const PROFILE_MATCHING_WEIGHT = 0.25;
+    private const RIASEC_AFFINITY_WEIGHT = 0.15;
+
+    /**
+     * Hard constraint thresholds for pre-filtering (7D behavioral dimensions).
      *
      * Format: 'major-slug' => ['dimension' => minimum_score]
      * Majors are eliminated BEFORE TOPSIS if the student
      * does not meet the absolute minimum threshold.
      */
     private const HARD_CONSTRAINTS = [
-        // Medical cluster — requires extreme consistency
-        'kedokteran-umum' => ['konsistensi' => 60, 'minat' => 55],
-        'kedokteran-gigi' => ['konsistensi' => 55, 'minat' => 50],
-        'farmasi' => ['konsistensi' => 55],
+        // Medical cluster — requires extreme perseverance & consistency
+        'kedokteran-umum' => ['daya_juang' => 55, 'konsistensi' => 55, 'minat_sosial' => 45],
+        'kedokteran-gigi' => ['daya_juang' => 50, 'konsistensi' => 50],
+        'farmasi' => ['konsistensi' => 55, 'logika' => 50],
 
         // MIPA / Heavy Engineering — requires strong logic
-        'matematika' => ['logika' => 55],
-        'aktuaria' => ['logika' => 55],
-        'teknik-elektro' => ['logika' => 50],
-        'teknik-mesin' => ['logika' => 50],
-        'statistika' => ['logika' => 50],
+        'matematika' => ['logika' => 55, 'minat_stem' => 50],
+        'aktuaria' => ['logika' => 55, 'minat_stem' => 45],
+        'teknik-elektro' => ['logika' => 50, 'minat_stem' => 45],
+        'teknik-mesin' => ['logika' => 50, 'minat_stem' => 45],
+        'statistika' => ['logika' => 50, 'minat_stem' => 40],
 
-        // Creative / Passion-driven — requires strong interest
-        'desain-komunikasi-visual' => ['minat' => 55],
-        'pgsd' => ['minat' => 50, 'konsistensi' => 50],
+        // Creative / Passion-driven — requires strong artistic interest
+        'desain-komunikasi-visual' => ['minat_seni' => 55],
+        'arsitektur' => ['minat_seni' => 40, 'minat_stem' => 35],
+
+        // Education — requires strong social drive
+        'pgsd' => ['minat_sosial' => 50, 'daya_juang' => 45],
+        'pendidikan-bahasa-inggris' => ['minat_sosial' => 45],
+        'pendidikan-matematika' => ['logika' => 45, 'minat_sosial' => 40],
+
+        // IT — requires STEM aptitude
+        'teknik-informatika' => ['logika' => 45, 'minat_stem' => 40],
+        'sistem-informasi' => ['logika' => 40],
     ];
 
     public function __construct(
@@ -86,7 +103,14 @@ class RecommendationEngine
             $weightsBySlug[$slug] = $ahp['weights'][$index];
         }
 
-        $majors = Major::query()->active()->orderBy('name')->get();
+        $majors = Major::query()
+            ->active()
+            ->with(['universities' => function ($query) {
+                // Eager load universities and sort by acceptance rate (hardest to get into first)
+                $query->orderByPivot('acceptance_rate', 'asc');
+            }])
+            ->orderBy('name')
+            ->get();
 
         if ($majors->isEmpty()) {
             throw ValidationException::withMessages([
@@ -96,10 +120,9 @@ class RecommendationEngine
 
         $behavioralProfile = $payload['behavioral_profile'];
         $psychometricResults = null;
+        $studentRiasecScores = null;
 
         // ── Psychometric Enhancement ──
-        // If the wizard collected RIASEC/Grit/Logic data, compute
-        // a scientifically-derived behavioral profile from them.
         $psychometricPayload = $payload['psychometric_profile'] ?? null;
 
         if ($psychometricPayload) {
@@ -107,6 +130,7 @@ class RecommendationEngine
 
             // Override slider-based behavioral profile with derived scores
             $behavioralProfile = $psychometricResults['derived_behavioral'];
+            $studentRiasecScores = $psychometricResults['raw_scores']['riasec']['scores'] ?? null;
         }
 
         // ── Phase 2: Hard Constraint Elimination (Pre-filter) ──
@@ -116,6 +140,17 @@ class RecommendationEngine
             'slug' => $major->slug,
             'scores' => $major->criteria_scores,
             'behavioral_profile' => $major->behavioral_profile ?? [],
+            'riasec_profile' => $major->riasec_profile ?? [],
+            'universities' => $major->universities->map(fn ($uni) => [
+                'id' => $uni->id,
+                'name' => $uni->name,
+                'short_name' => $uni->short_name,
+                'logo_url' => $uni->logo_url,
+                'accreditation' => $uni->pivot->accreditation,
+                'acceptance_rate' => $uni->pivot->acceptance_rate,
+                'capacity' => $uni->pivot->capacity,
+                'ukt_tier' => $uni->pivot->ukt_tier,
+            ])->all(),
         ])->all();
 
         $filteredAlternatives = $this->applyHardConstraints($allAlternatives, $behavioralProfile);
@@ -151,12 +186,12 @@ class RecommendationEngine
             ];
         }
 
-        // ── Phase 5: Profile Matching + Final Scoring ──
+        // ── Phase 5: Profile Matching + RIASEC Affinity + Final Scoring ──
         return DB::transaction(function () use (
             $payload, $userId, $criterionOrder, $ahp,
             $behavioralProfile, $topsisRankings,
             $sawRankLookup, $algorithmsAgree, $eliminatedCount,
-            $psychometricResults,
+            $psychometricResults, $studentRiasecScores,
         ): Assessment {
             $assessment = Assessment::query()->create([
                 'user_id' => $userId,
@@ -183,8 +218,9 @@ class RecommendationEngine
             foreach ($topsisRankings as $ranking) {
                 $majorSlug = $ranking['alternative']['slug'] ?? '';
                 $majorBehavioral = $ranking['alternative']['behavioral_profile'] ?? [];
+                $majorRiasec = $ranking['alternative']['riasec_profile'] ?? [];
 
-                // Profile Matching (Gap Analysis) replaces old Euclidean
+                // Profile Matching (Gap Analysis)
                 $profileMatch = $this->profileMatchingService->calculate(
                     $behavioralProfile,
                     $majorBehavioral,
@@ -193,8 +229,16 @@ class RecommendationEngine
 
                 $behavioralScore = $profileMatch['score'];
 
-                // Composite: 70% TOPSIS + 30% Profile Matching
-                $finalScore = ($ranking['preference'] * 0.70) + ($behavioralScore * 0.30);
+                // RIASEC Affinity (Cosine Similarity)
+                $riasecAffinity = 0.5; // Default neutral if no RIASEC data
+                if ($studentRiasecScores && ! empty($majorRiasec)) {
+                    $riasecAffinity = $this->calculateRiasecAffinity($studentRiasecScores, $majorRiasec);
+                }
+
+                // Composite: 60% TOPSIS + 25% Profile Matching + 15% RIASEC Affinity
+                $finalScore = ($ranking['preference'] * self::TOPSIS_WEIGHT)
+                    + ($behavioralScore * self::PROFILE_MATCHING_WEIGHT)
+                    + ($riasecAffinity * self::RIASEC_AFFINITY_WEIGHT);
 
                 // Algorithm agreement confidence bonus
                 $majorId = $ranking['alternative']['id'];
@@ -222,16 +266,26 @@ class RecommendationEngine
                             'gaps' => $profileMatch['gaps'],
                         ],
 
+                        // RIASEC Affinity trace
+                        'riasec_affinity' => [
+                            'score' => round($riasecAffinity, 4),
+                            'student_riasec' => $studentRiasecScores,
+                            'major_riasec' => $majorRiasec,
+                        ],
+
                         // SAW cross-verification trace
                         'saw_verification' => [
                             'saw_rank' => $sawData['rank'],
                             'saw_score' => $sawData['score'],
                         ],
+
+                        // Real universities offering this major
+                        'universities' => $ranking['alternative']['universities'] ?? [],
                     ],
                 ]);
             }
 
-            // Re-rank by final_score (Profile Matching may reshuffle)
+            // Re-rank by final_score (Profile Matching + RIASEC may reshuffle)
             usort(
                 $persistedResults,
                 fn (RecommendationResult $left, RecommendationResult $right): int => $right->final_score <=> $left->final_score,
@@ -258,7 +312,7 @@ class RecommendationEngine
                     'recommendation_confidence' => round($algorithmConfidence, 2),
                     'algorithm_agreement' => $algorithmsAgree,
                     'eliminated_alternatives' => $eliminatedCount,
-                    'scoring_method' => 'TOPSIS(70%) + ProfileMatching(30%)',
+                    'scoring_method' => 'TOPSIS(60%) + ProfileMatching(25%) + RIASEC_Affinity(15%)',
                     'cross_verification' => 'SAW',
                     'psychometric_enabled' => $psychometricResults !== null,
                     'quality_validation' => $psychometricResults['quality'] ?? null,
@@ -267,6 +321,55 @@ class RecommendationEngine
 
             return $assessment;
         });
+    }
+
+    /**
+     * RIASEC Affinity via Cosine Similarity.
+     *
+     * Measures the directional alignment between a student's RIASEC vector
+     * and a major's target RIASEC profile. This captures personality-fit
+     * regardless of magnitude (a strongly R student matches strongly R major).
+     *
+     * cos(θ) = (A · B) / (||A|| × ||B||)
+     *
+     * @param  array<string, float>  $studentRiasec  e.g. ['Realistic' => 75, 'Investigative' => 90, ...]
+     * @param  array<string, float>  $majorRiasec    e.g. ['R' => 70, 'I' => 95, ...]
+     * @return float  Normalized 0-1 score
+     */
+    private function calculateRiasecAffinity(array $studentRiasec, array $majorRiasec): float
+    {
+        // Map student RIASEC (full names) to short keys
+        $keyMap = [
+            'Realistic' => 'R',
+            'Investigative' => 'I',
+            'Artistic' => 'A',
+            'Social' => 'S',
+            'Enterprising' => 'E',
+            'Conventional' => 'C',
+        ];
+
+        $dotProduct = 0.0;
+        $magnitudeStudent = 0.0;
+        $magnitudeMajor = 0.0;
+
+        foreach ($keyMap as $longKey => $shortKey) {
+            $s = (float) ($studentRiasec[$longKey] ?? 0);
+            $m = (float) ($majorRiasec[$shortKey] ?? 0);
+
+            $dotProduct += $s * $m;
+            $magnitudeStudent += $s ** 2;
+            $magnitudeMajor += $m ** 2;
+        }
+
+        $magnitudeStudent = sqrt($magnitudeStudent);
+        $magnitudeMajor = sqrt($magnitudeMajor);
+
+        if ($magnitudeStudent <= 0 || $magnitudeMajor <= 0) {
+            return 0.5; // Neutral if no data
+        }
+
+        // Cosine similarity is already 0-1 for non-negative vectors
+        return $dotProduct / ($magnitudeStudent * $magnitudeMajor);
     }
 
     /**
@@ -306,12 +409,17 @@ class RecommendationEngine
     }
 
     /**
-     * Process psychometric data (RIASEC + Grit + Logic) and derive behavioral profile.
+     * Process psychometric data (RIASEC + Grit + Logic) and derive 7D behavioral profile.
      *
-     * Mapping to existing behavioral dimensions:
-     *   minat ← (Artistic + Social + Enterprising RIASEC average)
-     *   logika ← (Investigative + Conventional RIASEC average) blended with logic_score
-     *   konsistensi ← Grit score (perseverance + consistency)
+     * Mapping to 7 behavioral dimensions:
+     *
+     *   minat_stem    ← weighted(RIASEC_R × 0.4 + RIASEC_I × 0.6)
+     *   minat_seni    ← RIASEC_Artistic
+     *   minat_sosial  ← weighted(RIASEC_S × 0.5 + RIASEC_E × 0.3 + RIASEC_A × 0.2)
+     *   keteraturan   ← weighted(RIASEC_C × 0.7 + Grit_consistency × 0.3)
+     *   daya_juang    ← Grit_perseverance
+     *   konsistensi   ← Grit_consistency
+     *   logika        ← weighted(logic_score × 0.6 + RIASEC_I × 0.25 + RIASEC_C × 0.15)
      */
     private function processPsychometricData(array $payload): array
     {
@@ -347,36 +455,42 @@ class RecommendationEngine
             );
         }
 
-        // --- Derive behavioral profile ---
-        $riasecScores = $riasecResult['scores'] ?? [];
-        $logicScore = $logicResult['logic_score'] ?? 75.0;
-        $gritScore = $gritResult['overall_grit'] ?? 80.0;
+        // --- Extract raw scores with safe defaults ---
+        $riasecScores = $riasecResult['scores'] ?? [
+            'Realistic' => 50, 'Investigative' => 50, 'Artistic' => 50,
+            'Social' => 50, 'Enterprising' => 50, 'Conventional' => 50,
+        ];
 
-        // minat: blend of passion-oriented RIASEC dimensions
-        $minat = round(
-            (($riasecScores['Artistic'] ?? 50) +
-             ($riasecScores['Social'] ?? 50) +
-             ($riasecScores['Enterprising'] ?? 50)) / 3,
+        $logicScore = $logicResult['logic_score'] ?? 50.0;
+        $gritPerseverance = $gritResult['perseverance_of_effort'] ?? 50.0;
+        $gritConsistency = $gritResult['consistency_of_interest'] ?? 50.0;
+
+        // --- Derive 7D behavioral profile ---
+        $minatStem = round(
+            ($riasecScores['Realistic'] * 0.4) + ($riasecScores['Investigative'] * 0.6),
             1,
         );
 
-        // logika: blend of analytical RIASEC + logic test score
-        $riasecLogic = (($riasecScores['Investigative'] ?? 50) +
-                        ($riasecScores['Conventional'] ?? 50)) / 2;
-        $logika = round(($riasecLogic * 0.4) + ($logicScore * 0.6), 1);
+        $minatSeni = round($riasecScores['Artistic'], 1);
 
-        // konsistensi: directly from Grit score
-        $konsistensi = round($gritScore, 1);
+        $minatSosial = round(
+            ($riasecScores['Social'] * 0.5) + ($riasecScores['Enterprising'] * 0.3) + ($riasecScores['Artistic'] * 0.2),
+            1,
+        );
 
-        // Placeholder for other derived behavioral dimensions if needed
-        $minatStem = 0; // Example placeholder
-        $minatSeni = 0; // Example placeholder
-        $minatSosial = 0; // Example placeholder
-        $minatManajemen = 0; // Example placeholder
-        $dayaJuang = 0; // Example placeholder
-        $logikaMatematika = 0; // Example placeholder
-        $kemampuanAnalitis = 0; // Example placeholder
-        $qualityStats = []; // Example placeholder
+        $keteraturan = round(
+            ($riasecScores['Conventional'] * 0.7) + ($gritConsistency * 0.3),
+            1,
+        );
+
+        $dayaJuang = round($gritPerseverance, 1);
+
+        $konsistensi = round($gritConsistency, 1);
+
+        $logika = round(
+            ($logicScore * 0.6) + ($riasecScores['Investigative'] * 0.25) + ($riasecScores['Conventional'] * 0.15),
+            1,
+        );
 
         return [
             'raw_scores' => [
@@ -388,13 +502,12 @@ class RecommendationEngine
                 'minat_stem' => $minatStem,
                 'minat_seni' => $minatSeni,
                 'minat_sosial' => $minatSosial,
-                'minat_manajemen' => $minatManajemen,
+                'keteraturan' => $keteraturan,
                 'daya_juang' => $dayaJuang,
-                'logika_matematika' => $logikaMatematika,
-                'kemampuan_analitis' => $kemampuanAnalitis,
                 'konsistensi' => $konsistensi,
+                'logika' => $logika,
             ],
-            'quality' => $qualityStats,
+            'quality' => $quality,
         ];
     }
 
@@ -413,6 +526,7 @@ class RecommendationEngine
             'slug' => $major->slug,
             'scores' => $major->criteria_scores,
             'behavioral_profile' => $major->behavioral_profile ?? [],
+            'riasec_profile' => $major->riasec_profile ?? [],
         ])->all();
 
         $filteredAlternatives = $this->applyHardConstraints($allAlternatives, $behavioralProfile);
@@ -441,12 +555,12 @@ class RecommendationEngine
         foreach ($topsisRankings as $ranking) {
             $majorSlug = $ranking['alternative']['slug'] ?? '';
             $majorBehavioral = $ranking['alternative']['behavioral_profile'] ?? [];
-            
+
             $profileMatch = $this->profileMatchingService->calculate($behavioralProfile, $majorBehavioral, $majorSlug);
             $behavioralScore = $profileMatch['score'];
-            $finalScore = ($ranking['preference'] * 0.70) + ($behavioralScore * 0.30);
+            $finalScore = ($ranking['preference'] * self::TOPSIS_WEIGHT) + ($behavioralScore * self::PROFILE_MATCHING_WEIGHT);
             $majorId = $ranking['alternative']['id'];
-            
+
             $results[] = [
                 'major_id' => $majorId,
                 'major' => collect($allAlternatives)->firstWhere('id', $majorId),
@@ -455,8 +569,8 @@ class RecommendationEngine
                 'final_score' => round($finalScore, 6),
                 'meta' => [
                     'probability_percentage' => round($finalScore * 100, 2),
-                    'profile_matching' => $profileMatch
-                ]
+                    'profile_matching' => $profileMatch,
+                ],
             ];
         }
 

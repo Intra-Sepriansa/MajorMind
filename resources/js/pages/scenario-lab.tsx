@@ -1,4 +1,5 @@
 import { Head, router } from '@inertiajs/react';
+import ScenarioHeader3D from '@/components/scenario-lab/scenario-header-3d';
 import {
     FilePenLine,
     FlaskConical,
@@ -684,51 +685,28 @@ export default function ScenarioLab({
             <Head title="Scenario Lab" />
 
             <div ref={scrollRef} className="scroll-reveal-container space-y-6 bg-[#0b0e14] px-4 py-6 text-white lg:px-6">
-                <section className="grid gap-6 rounded-[32px] border border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.04),rgba(255,255,255,0.02))] p-6">
-                    <div className="inline-flex w-fit items-center gap-2 rounded-full border border-white/10 bg-white/[0.04] px-4 py-2 text-xs tracking-[0.28em] text-slate-300 uppercase">
-                        <FlaskConical className="h-3.5 w-3.5 text-[#ff2d20]" />
-                        Decision Scenario Lab
-                    </div>
-                    <div className="grid gap-4 lg:grid-cols-[1.2fr_0.8fr]">
-                        <div>
-                            <h1 className="text-4xl font-semibold tracking-[-0.05em]">
-                                Kelola, simulasikan, dan dokumentasikan skenario
-                                keputusan.
-                            </h1>
-                            <p className="mt-3 max-w-3xl text-sm leading-7 text-slate-400">
-                                Scenario Lab sekarang menangani seluruh siklus
-                                skenario: membuat draft bobot, mem-preview
-                                ranking, menyimpan assessment turunan, memberi
-                                notes, menulis rationale keputusan, dan menghapus
-                                skenario yang tidak lagi relevan.
-                            </p>
+                <section className="relative overflow-hidden rounded-[32px] border border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.04),rgba(255,255,255,0.02))] p-6">
+                    <ScenarioHeader3D />
+                    <div className="relative z-10 grid gap-6">
+                        <div className="inline-flex w-fit items-center gap-2 rounded-full border border-white/10 bg-white/[0.04] px-4 py-2 text-xs tracking-[0.28em] text-slate-300 uppercase">
+                            <FlaskConical className="h-3.5 w-3.5 text-[#ff2d20]" />
+                            Decision Scenario Lab
                         </div>
-                        <Card className="rounded-[28px] border-white/10 bg-[#000000]/80 py-0">
-                            <CardContent className="space-y-3 px-5 py-5">
-                                <div className="text-xs tracking-[0.28em] text-slate-500 uppercase">
-                                    Baseline assessment
-                                </div>
-                                <div className="text-2xl font-semibold text-white">
-                                    {initialAssessment?.top_major?.name ??
-                                        'Belum ada assessment'}
-                                </div>
-                                <div className="text-sm text-slate-400">
-                                    Confidence{' '}
-                                    {initialAssessment?.summary?.recommendation_confidence?.toFixed(
-                                        1,
-                                    ) ?? '0.0'}
-                                    % • CR{' '}
-                                    {initialAssessment?.consistency_ratio.toFixed(
-                                        4,
-                                    ) ?? '0.0000'}
-                                </div>
-                                <div className="text-sm text-slate-400">
-                                    Sesi primer tersimpan:{' '}
-                                    {assessmentHistory.meta.total} • Scenario
-                                    tersimpan: {scenarioList.length}
-                                </div>
-                            </CardContent>
-                        </Card>
+                        <div className="grid gap-4">
+                            <div className="max-w-xl">
+                                <h1 className="text-4xl font-semibold tracking-[-0.05em]">
+                                    Kelola, simulasikan, dan dokumentasikan skenario
+                                    keputusan.
+                                </h1>
+                                <p className="mt-3 text-sm leading-7 text-slate-400">
+                                    Scenario Lab sekarang menangani seluruh siklus
+                                    skenario: membuat draft bobot, mem-preview
+                                    ranking, menyimpan assessment turunan, memberi
+                                    notes, menulis rationale keputusan, dan menghapus
+                                    skenario yang tidak lagi relevan.
+                                </p>
+                            </div>
+                        </div>
                     </div>
                 </section>
 

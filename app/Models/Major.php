@@ -18,6 +18,7 @@ class Major extends Model
         'description',
         'criteria_scores',
         'behavioral_profile',
+        'riasec_profile',
         'is_active',
     ];
 
@@ -26,8 +27,25 @@ class Major extends Model
         return [
             'criteria_scores' => 'array',
             'behavioral_profile' => 'array',
+            'riasec_profile' => 'array',
             'is_active' => 'boolean',
         ];
+    }
+
+    /**
+     * Get the universities that offer this major.
+     */
+    public function universities(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
+    {
+        return $this->belongsToMany(University::class, 'university_majors')
+            ->withPivot([
+                'accreditation',
+                'capacity',
+                'applicants',
+                'acceptance_rate',
+                'ukt_tier',
+            ])
+            ->withTimestamps();
     }
 
     public function scopeActive(Builder $query): Builder

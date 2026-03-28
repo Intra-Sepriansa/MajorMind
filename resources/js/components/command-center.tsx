@@ -18,6 +18,7 @@ import {
 import { useEffect, useRef, useState } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import type { AssessmentResponse, Recommendation } from '@/types';
+import NeuralNetwork3D from '@/components/dashboard/neural-network-3d';
 
 type CommandCenterProps = {
     assessment: AssessmentResponse | null;
@@ -573,19 +574,21 @@ function RecommendationCard({ rec, index }: { rec: Recommendation; index: number
 export function CommandCenter({ assessment, onExportPdf, isExporting }: CommandCenterProps) {
     if (!assessment || assessment.recommendations.length === 0) {
         return (
-            <section className="mb-8 px-5 pt-6 lg:px-8">
-                <Card className="rounded-[28px] border-white/10 bg-[#000000]/82 py-0">
-                    <CardContent className="flex flex-col items-center gap-4 px-8 py-12 text-center">
-                        <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-[#ff2d20]/10">
-                            <Sparkles className="h-7 w-7 text-[#ff2d20]" />
-                        </div>
-                        <h2 className="text-lg font-semibold text-white">Belum Ada Assessment</h2>
-                        <p className="max-w-md text-sm text-slate-400">
-                            Jalankan assessment pertama Anda untuk melihat Command Center — visualisasi rekomendasi real-time dari 6 fase komputasi AHP-TOPSIS.
-                        </p>
-                    </CardContent>
-                </Card>
-            </section>
+            <>
+                <section className="mb-8 px-5 lg:px-8">
+                    <Card className="rounded-[28px] border-white/10 bg-[#000000]/82 py-0">
+                        <CardContent className="flex flex-col items-center gap-4 px-8 py-12 text-center">
+                            <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-[#ff2d20]/10">
+                                <Sparkles className="h-7 w-7 text-[#ff2d20]" />
+                            </div>
+                            <h2 className="text-lg font-semibold text-white">Belum Ada Assessment</h2>
+                            <p className="max-w-md text-sm text-slate-400">
+                                Jalankan assessment pertama Anda untuk melihat Command Center — visualisasi rekomendasi real-time dari 6 fase komputasi AHP-TOPSIS.
+                            </p>
+                        </CardContent>
+                    </Card>
+                </section>
+            </>
         );
     }
 
@@ -596,52 +599,59 @@ export function CommandCenter({ assessment, onExportPdf, isExporting }: CommandC
     const completedPhases = cr <= 0.1 ? 6 : 2; // all phases done if CR valid
     const totalWeights = Object.values(assessment.criterion_weights);
     const normComplete = totalWeights.length > 0 && Math.abs(totalWeights.reduce((a, b) => a + b, 0) - 1) < 0.01;
+    const criteriaCount = Object.keys(assessment.criterion_weights).length || 4;
 
     return (
-        <section className="mb-8 space-y-5 px-5 pt-6 lg:px-8">
-            {/* Header */}
-            <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-                <div>
-                    <div className="mb-1 flex items-center gap-2 text-xs tracking-[0.28em] text-slate-500 uppercase">
-                        <Zap className="h-3.5 w-3.5 text-[#ff2d20]" />
-                        Command center
+        <>
+            
+            <section className="mb-8 space-y-5 px-5 lg:px-8">
+                {/* Header */}
+                <div className="relative overflow-hidden rounded-[24px] border border-white/10 bg-[#090b0e] px-6 py-8 sm:px-8 sm:py-10 shadow-2xl">
+                    <NeuralNetwork3D />
+                    
+                    <div className="relative z-10 flex flex-col gap-10 lg:flex-row lg:items-center lg:justify-between">
+                        {/* Left Side */}
+                        <div className="max-w-xl xl:max-w-2xl">
+                            <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-[10px] font-semibold uppercase tracking-[0.15em] text-slate-300">
+                                <Sparkles className="h-3.5 w-3.5 text-[#ff2d20]" />
+                                Intelligent DSS Workspace
+                            </div>
+                            <h1 className="mb-5 text-4xl font-extrabold tracking-tight text-white sm:text-5xl lg:text-6xl">
+                                Tinjau Kecerdasan<br />Keputusan.
+                            </h1>
+                            <p className="mb-10 max-w-xl text-sm leading-relaxed text-slate-400 sm:text-base">
+                                Dashboard ini difokuskan untuk membaca hasil, meninjau histori, membandingkan sesi, dan memahami alasan keputusan.
+                            </p>
+                            
+                            {/* Stats Boxes */}
+                            <div className="flex flex-wrap gap-4 mb-8">
+                                <div className="flex-1 min-w-[120px] rounded-2xl border border-white/5 bg-[#000000] px-5 py-4 shadow-inner ring-1 ring-white/5">
+                                    <div className="mb-1 text-[10px] font-semibold uppercase tracking-widest text-slate-500">Criteria</div>
+                                    <div className="text-2xl font-bold text-white">{criteriaCount}</div>
+                                </div>
+                                <div className="flex-1 min-w-[120px] rounded-2xl border border-white/5 bg-[#000000] px-5 py-4 shadow-inner ring-1 ring-white/5">
+                                    <div className="mb-1 text-[10px] font-semibold uppercase tracking-widest text-slate-500">Consistency</div>
+                                    <div className="text-2xl font-bold text-white">{cr.toFixed(4)}</div>
+                                </div>
+                                <div className="flex-1 min-w-[120px] rounded-2xl border border-white/5 bg-[#000000] px-5 py-4 shadow-inner ring-1 ring-white/5">
+                                    <div className="mb-1 text-[10px] font-semibold uppercase tracking-widest text-slate-500">Confidence</div>
+                                    <div className="text-2xl font-bold text-white">{confidence.value.toFixed(1)}%</div>
+                                </div>
+                            </div>
+
+                            <div className="flex">
+                                <Link 
+                                    href="/assessment" 
+                                    className="inline-flex items-center justify-center rounded-xl bg-[#ff2d20] px-6 py-3.5 text-sm font-bold text-white transition-all hover:bg-red-600 hover:shadow-[0_0_24px_rgba(255,45,32,0.5)] active:scale-[0.98]"
+                                >
+                                    <Sparkles className="mr-2 h-4 w-4" />
+                                    Create new assessment
+                                </Link>
+                            </div>
+                        </div>
+
                     </div>
-                    <h1 className="text-xl font-bold text-white sm:text-2xl">
-                        Rekomendasi Jurusan Anda
-                    </h1>
                 </div>
-                <div className="flex gap-2">
-                    {onExportPdf && (
-                        <button
-                            type="button"
-                            onClick={onExportPdf}
-                            disabled={isExporting}
-                            className="flex items-center gap-1.5 rounded-xl border border-white/10 px-3 py-2 text-xs font-medium text-slate-300 transition-all hover:bg-[#ff2d20]/10 hover:border-[#ff2d20]/30 hover:text-white disabled:opacity-50"
-                        >
-                            <Download className="h-3.5 w-3.5" /> 
-                            {isExporting ? 'Exporting...' : 'Export PDF'}
-                        </button>
-                    )}
-                    <Link
-                        href="/insights"
-                        className="flex items-center gap-1.5 rounded-xl border border-white/10 px-3 py-2 text-xs text-slate-300 transition-all hover:border-[#ff2d20]/30 hover:text-white"
-                    >
-                        <BookOpenText className="h-3.5 w-3.5" /> Insights
-                    </Link>
-                    <Link
-                        href="/comparison"
-                        className="flex items-center gap-1.5 rounded-xl border border-white/10 px-3 py-2 text-xs text-slate-300 transition-all hover:border-[#ff2d20]/30 hover:text-white"
-                    >
-                        <GitCompareArrows className="h-3.5 w-3.5" /> Comparison
-                    </Link>
-                    <Link
-                        href="/scenario-lab"
-                        className="flex items-center gap-1.5 rounded-xl border border-white/10 px-3 py-2 text-xs text-slate-300 transition-all hover:border-[#ff2d20]/30 hover:text-white"
-                    >
-                        <FlaskConical className="h-3.5 w-3.5" /> What-If
-                    </Link>
-                </div>
-            </div>
 
             {/* Top row: Recommendation Cards + Confidence Meter */}
             <div className="grid gap-5 lg:grid-cols-[1fr_320px]">
@@ -735,5 +745,6 @@ export function CommandCenter({ assessment, onExportPdf, isExporting }: CommandC
                 </CardContent>
             </Card>
         </section>
+        </>
     );
 }

@@ -131,8 +131,78 @@ export function RiasecPhase({ answers, onAnswersChange, onContinue, onBack }: Ri
         onAnswersChange({ ...answers, [questionId]: value });
     };
 
+    const [isCompleting, setIsCompleting] = useState(false);
+
+    const handleContinue = () => {
+        setIsCompleting(true);
+        setTimeout(() => {
+            onContinue();
+        }, 3000); // 3 seconds advanced animation
+    };
+
     return (
-        <div className="space-y-6">
+        <div className="relative space-y-6">
+            {/* Advanced Completion Animation Overlay */}
+            {isCompleting && (
+                <div className="absolute inset-0 z-50 flex flex-col items-center justify-center rounded-[28px] bg-[#000000]/80 backdrop-blur-xl transition-all duration-500">
+                    <style>
+                        {`
+                        @keyframes scanline {
+                            0% { transform: translateY(-100%); opacity: 0; }
+                            50% { opacity: 1; }
+                            100% { transform: translateY(100%); opacity: 0; }
+                        }
+                        .animate-scanline {
+                            animation: scanline 2s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+                        }
+                        `}
+                    </style>
+                    <div className="relative flex h-40 w-40 items-center justify-center">
+                        <div className="absolute inset-0 animate-ping rounded-full border border-[#ff2d20] opacity-20" />
+                        <div className="absolute -inset-4 rounded-full border border-dashed border-white/10 animate-[spin_4s_linear_infinite]" />
+                        <div className="absolute inset-2 rounded-full border-t-2 border-r-2 border-[#ff2d20] animate-[spin_2s_linear_infinite]" />
+                        <div className="absolute inset-8 rounded-full border-b-2 border-emerald-400 animate-[spin_3s_linear_infinite_reverse]" />
+                        
+                        {/* Scanning effect */}
+                        <div className="absolute inset-0 overflow-hidden rounded-full">
+                            <div className="h-full w-full bg-gradient-to-b from-transparent via-[#ff2d20]/30 to-transparent animate-scanline" />
+                        </div>
+
+                        <div className="z-10 flex h-20 w-20 items-center justify-center rounded-full bg-black shadow-[0_0_30px_rgba(255,45,32,0.4)] ring-1 ring-white/20">
+                            <Hexagon className="h-10 w-10 text-white animate-pulse" />
+                        </div>
+                    </div>
+                    
+                    <div className="mt-10 space-y-3 text-center">
+                        <div className="text-xl font-bold tracking-[0.2em] text-white uppercase" style={{ fontFamily: '"Space Grotesk", var(--font-sans)' }}>
+                            Menyusun Profil Psikologi
+                        </div>
+                        <div className="text-sm tracking-wide text-slate-400 animate-pulse">
+                            Menganalisis matriks RIASEC 6-dimensi...
+                        </div>
+                    </div>
+
+                    {/* Progress bars compilation effect */}
+                    <div className="mt-8 flex gap-2">
+                        {dimensions.map((dim, i) => (
+                            <div key={dim} className="h-1.5 w-10 overflow-hidden rounded-full bg-white/10">
+                                <div 
+                                    className="h-full bg-gradient-to-r from-[#ff2d20] to-[#ff8a80] transition-all" 
+                                    style={{ 
+                                        width: '100%', 
+                                        animation: `fill-bar 0.8s cubic-bezier(0.4, 0, 0.2, 1) ${i * 0.15}s forwards`,
+                                        transform: 'translateX(-100%)' 
+                                    }} 
+                                />
+                            </div>
+                        ))}
+                    </div>
+                    <style dangerouslySetInnerHTML={{__html: `
+                        @keyframes fill-bar { to { transform: translateX(0); } }
+                    `}} />
+                </div>
+            )}
+
             {/* Progress header */}
             <Card className="rounded-[28px] border-white/10 bg-[#000000]/82 py-0">
                 <CardContent className="px-6 py-5">
@@ -228,25 +298,78 @@ export function RiasecPhase({ answers, onAnswersChange, onContinue, onBack }: Ri
                     ))}
                 </div>
 
-                {/* Live Radar Sidebar */}
+                {/* Live Radar Sidebar — Advanced Animated */}
                 <div className="sticky top-28">
-                    <Card className="rounded-2xl border-white/10 bg-[#000000]/82 py-0">
-                        <CardContent className="px-4 py-4">
-                            <div className="mb-3 text-center text-xs text-slate-500">Live RIASEC Profile</div>
-                            <RiasecRadar scores={scores} />
-                            <div className="mt-3 space-y-1.5">
-                                {dimensions.map((dim) => (
-                                    <div key={dim} className="flex items-center justify-between text-xs">
-                                        <div className="flex items-center gap-1.5">
-                                            <span
-                                                className="h-2 w-2 rounded-full"
-                                                style={{ backgroundColor: dimensionColors[dim] }}
-                                            />
-                                            <span className="text-slate-400">{dim[0]}</span>
+                    <Card className="rounded-[24px] border-white/10 bg-[#000000]/90 py-0 shadow-[0_0_40px_rgba(0,0,0,0.5)]">
+                        <CardContent className="px-5 py-5">
+                            {/* Header with pulse indicator */}
+                            <div className="mb-4 flex items-center justify-center gap-2">
+                                <span className="relative flex h-2 w-2">
+                                    <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[#ff2d20] opacity-75" />
+                                    <span className="relative inline-flex h-2 w-2 rounded-full bg-[#ff2d20]" />
+                                </span>
+                                <span className="text-[10px] font-bold tracking-[0.25em] text-slate-400 uppercase">
+                                    Live RIASEC Profile
+                                </span>
+                            </div>
+
+                            <RiasecRadarAdvanced scores={scores} />
+
+                            {/* Dominant Type Badge */}
+                            <DominantTypeBadge scores={scores} />
+
+                            {/* Animated Score Bars */}
+                            <div className="mt-4 space-y-2.5">
+                                {dimensions.map((dim) => {
+                                    const score = scores[dim];
+                                    const maxScore = Math.max(...dimensions.map(d => scores[d]));
+                                    const isDominant = score > 0 && score === maxScore;
+                                    return (
+                                        <div key={dim} className="group">
+                                            <div className="mb-1 flex items-center justify-between">
+                                                <div className="flex items-center gap-2">
+                                                    <span
+                                                        className="h-2.5 w-2.5 rounded-full ring-2 ring-black/50 transition-all duration-500"
+                                                        style={{
+                                                            backgroundColor: dimensionColors[dim],
+                                                            boxShadow: isDominant ? `0 0 8px ${dimensionColors[dim]}80` : 'none',
+                                                        }}
+                                                    />
+                                                    <span className={`text-xs font-semibold transition-colors ${isDominant ? 'text-white' : 'text-slate-400'}`}>
+                                                        {dimensionLabels[dim]}
+                                                    </span>
+                                                </div>
+                                                <span className={`font-mono text-xs font-bold transition-colors ${isDominant ? 'text-white' : 'text-slate-500'}`}>
+                                                    {score}%
+                                                </span>
+                                            </div>
+                                            <div className="h-[6px] overflow-hidden rounded-full bg-white/[0.04]">
+                                                <div
+                                                    className="h-full rounded-full transition-all duration-700 ease-out"
+                                                    style={{
+                                                        width: `${Math.max(2, score)}%`,
+                                                        background: `linear-gradient(90deg, ${dimensionColors[dim]}90, ${dimensionColors[dim]})`,
+                                                        boxShadow: score > 0 ? `0 0 10px ${dimensionColors[dim]}50` : 'none',
+                                                    }}
+                                                />
+                                            </div>
                                         </div>
-                                        <span className="font-mono text-slate-300">{scores[dim]}</span>
-                                    </div>
-                                ))}
+                                    );
+                                })}
+                            </div>
+
+                            {/* Total Progress */}
+                            <div className="mt-5 rounded-xl border border-white/5 bg-white/[0.02] px-3 py-2.5">
+                                <div className="flex items-center justify-between text-[10px]">
+                                    <span className="font-semibold tracking-wider text-slate-500 uppercase">Progress</span>
+                                    <span className="font-mono font-bold text-white">{answeredCount}/{totalQuestions}</span>
+                                </div>
+                                <div className="mt-1.5 h-1 overflow-hidden rounded-full bg-white/[0.06]">
+                                    <div
+                                        className="h-full rounded-full bg-[#ff2d20] transition-all duration-500"
+                                        style={{ width: `${(answeredCount / totalQuestions) * 100}%` }}
+                                    />
+                                </div>
                             </div>
                         </CardContent>
                     </Card>
@@ -259,6 +382,7 @@ export function RiasecPhase({ answers, onAnswersChange, onContinue, onBack }: Ri
                     variant="outline"
                     onClick={() => (currentDimIndex > 0 ? setCurrentDimIndex(currentDimIndex - 1) : onBack())}
                     className="h-11 rounded-xl border-white/10 bg-transparent text-slate-300 hover:bg-white/[0.04] hover:text-white"
+                    disabled={isCompleting}
                 >
                     <ArrowLeft className="mr-2 h-4 w-4" />
                     {currentDimIndex > 0 ? 'Dimensi Sebelumnya' : 'Kembali'}
@@ -267,7 +391,7 @@ export function RiasecPhase({ answers, onAnswersChange, onContinue, onBack }: Ri
                 {currentDimIndex < dimensions.length - 1 ? (
                     <Button
                         onClick={() => setCurrentDimIndex(currentDimIndex + 1)}
-                        disabled={!currentDimAnswered}
+                        disabled={!currentDimAnswered || isCompleting}
                         className="h-11 rounded-xl bg-[#ff2d20] px-6 font-semibold text-white shadow-[0_0_16px_rgba(255,45,32,0.3)] transition-all hover:bg-[#ff584d] disabled:opacity-40 disabled:shadow-none"
                     >
                         Dimensi Berikutnya
@@ -275,12 +399,12 @@ export function RiasecPhase({ answers, onAnswersChange, onContinue, onBack }: Ri
                     </Button>
                 ) : (
                     <Button
-                        onClick={onContinue}
-                        disabled={!allAnswered}
+                        onClick={handleContinue}
+                        disabled={!allAnswered || isCompleting}
                         className="h-11 rounded-xl bg-[#ff2d20] px-6 font-semibold text-white shadow-[0_0_16px_rgba(255,45,32,0.3)] transition-all hover:bg-[#ff584d] disabled:opacity-40 disabled:shadow-none"
                     >
-                        Lanjut ke Grit Scale
-                        <ArrowRight className="ml-2 h-4 w-4" />
+                        {isCompleting ? 'Menyusun Profil...' : 'Lanjut ke Grit Scale'}
+                        {!isCompleting && <ArrowRight className="ml-2 h-4 w-4" />}
                     </Button>
                 )}
             </div>
@@ -288,9 +412,37 @@ export function RiasecPhase({ answers, onAnswersChange, onContinue, onBack }: Ri
     );
 }
 
-/** Hexagonal radar chart for 6 RIASEC dimensions */
-function RiasecRadar({ scores }: { scores: Record<Dimension, number> }) {
-    const cx = 90, cy = 90, r = 65;
+/* ────────── Dominant Type Badge ────────── */
+function DominantTypeBadge({ scores }: { scores: Record<Dimension, number> }) {
+    const maxScore = Math.max(...dimensions.map(d => scores[d]));
+    if (maxScore === 0) return null;
+
+    const dominant = dimensions.find(d => scores[d] === maxScore)!;
+    const color = dimensionColors[dominant];
+
+    return (
+        <div
+            className="mx-auto mt-3 flex items-center gap-2 rounded-full px-3 py-1.5 text-[10px] font-bold tracking-wider uppercase"
+            style={{
+                background: `${color}15`,
+                color: color,
+                border: `1px solid ${color}30`,
+                boxShadow: `0 0 12px ${color}20`,
+            }}
+        >
+            <span className="relative flex h-1.5 w-1.5">
+                <span className="absolute inline-flex h-full w-full animate-ping rounded-full opacity-75" style={{ backgroundColor: color }} />
+                <span className="relative inline-flex h-1.5 w-1.5 rounded-full" style={{ backgroundColor: color }} />
+            </span>
+            Dominan: {dimensionLabels[dominant]}
+        </div>
+    );
+}
+
+/* ────────── Advanced Hexagonal Radar ────────── */
+function RiasecRadarAdvanced({ scores }: { scores: Record<Dimension, number> }) {
+    const cx = 100, cy = 100, r = 72;
+    const hasData = dimensions.some(d => scores[d] > 0);
 
     const toPoint = (i: number, val: number) => {
         const angle = -Math.PI / 2 + ((Math.PI * 2) / 6) * i;
@@ -298,29 +450,124 @@ function RiasecRadar({ scores }: { scores: Record<Dimension, number> }) {
         return { x: cx + Math.cos(angle) * dist, y: cy + Math.sin(angle) * dist };
     };
 
-    const polygon = dimensions.map((_, i) => {
-        const p = toPoint(i, scores[dimensions[i]]);
+    const polygon = dimensions.map((dim, i) => {
+        const p = toPoint(i, scores[dim]);
         return `${p.x},${p.y}`;
     }).join(' ');
 
     return (
-        <svg viewBox="0 0 180 180" className="mx-auto h-40 w-40">
-            {[33, 66, 100].map((ring) => (
+        <svg viewBox="0 0 200 200" className="mx-auto h-48 w-48">
+            <defs>
+                {/* Glow filter for the data polygon */}
+                <filter id="radarGlow" x="-50%" y="-50%" width="200%" height="200%">
+                    <feGaussianBlur in="SourceGraphic" stdDeviation="4" result="blur" />
+                    <feMerge>
+                        <feMergeNode in="blur" />
+                        <feMergeNode in="SourceGraphic" />
+                    </feMerge>
+                </filter>
+                {/* Node glow */}
+                <filter id="nodeGlow" x="-100%" y="-100%" width="300%" height="300%">
+                    <feGaussianBlur in="SourceGraphic" stdDeviation="3" result="blur" />
+                    <feMerge>
+                        <feMergeNode in="blur" />
+                        <feMergeNode in="SourceGraphic" />
+                    </feMerge>
+                </filter>
+                {/* Animated gradient for data fill */}
+                <radialGradient id="radarFill" cx="50%" cy="50%" r="60%">
+                    <stop offset="0%" stopColor="#ff2d20" stopOpacity="0.25" />
+                    <stop offset="100%" stopColor="#ff2d20" stopOpacity="0.05" />
+                </radialGradient>
+            </defs>
+
+            {/* Ambient pulse ring (behind everything) */}
+            {hasData && (
+                <circle cx={cx} cy={cy} r={r + 8} fill="none" stroke="#ff2d20" strokeWidth="0.5" opacity="0.15">
+                    <animate attributeName="r" values={`${r};${r + 14};${r}`} dur="3s" repeatCount="indefinite" />
+                    <animate attributeName="opacity" values="0.2;0.05;0.2" dur="3s" repeatCount="indefinite" />
+                </circle>
+            )}
+
+            {/* Concentric hexagonal grid rings */}
+            {[25, 50, 75, 100].map((ring) => (
                 <polygon
                     key={ring}
                     points={dimensions.map((_, i) => { const p = toPoint(i, ring); return `${p.x},${p.y}`; }).join(' ')}
                     fill="none"
                     stroke="rgba(255,255,255,0.06)"
-                    strokeWidth="1"
+                    strokeWidth="0.8"
+                    strokeDasharray={ring === 50 ? '4 4' : 'none'}
                 />
             ))}
+
+            {/* Axis lines */}
             {dimensions.map((_, i) => {
                 const p = toPoint(i, 100);
-                return <line key={i} x1={cx} y1={cy} x2={p.x} y2={p.y} stroke="rgba(255,255,255,0.04)" />;
+                return <line key={i} x1={cx} y1={cy} x2={p.x} y2={p.y} stroke="rgba(255,255,255,0.05)" strokeWidth="0.8" />;
             })}
-            <polygon points={polygon} fill="rgba(255,45,32,0.15)" stroke="#ff2d20" strokeWidth="2" />
+
+            {/* Spinning scan beam */}
+            {hasData && (
+                <line x1={cx} y1={cy} x2={cx} y2={cy - r} stroke="#ff2d20" strokeWidth="1" opacity="0.12">
+                    <animateTransform attributeName="transform" type="rotate" from={`0 ${cx} ${cy}`} to={`360 ${cx} ${cy}`} dur="8s" repeatCount="indefinite" />
+                    <animate attributeName="opacity" values="0.15;0.05;0.15" dur="4s" repeatCount="indefinite" />
+                </line>
+            )}
+
+            {/* Data polygon — glowing */}
+            <polygon
+                points={polygon}
+                fill="url(#radarFill)"
+                stroke="#ff2d20"
+                strokeWidth="2"
+                strokeLinejoin="round"
+                filter={hasData ? 'url(#radarGlow)' : undefined}
+                opacity={hasData ? 1 : 0.3}
+            >
+                {hasData && <animate attributeName="opacity" values="0.85;1;0.85" dur="3s" repeatCount="indefinite" />}
+            </polygon>
+
+            {/* Vertex nodes — pulsing glowing dots at each data point */}
             {dimensions.map((dim, i) => {
-                const p = toPoint(i, 120);
+                const score = scores[dim];
+                const p = toPoint(i, score);
+                const color = dimensionColors[dim];
+
+                return (
+                    <g key={dim}>
+                        {/* Outer glow ring */}
+                        {score > 0 && (
+                            <circle cx={p.x} cy={p.y} r="5" fill="none" stroke={color} strokeWidth="1" opacity="0.3" filter="url(#nodeGlow)">
+                                <animate attributeName="r" values="4;7;4" dur="2s" repeatCount="indefinite" begin={`${i * 0.3}s`} />
+                                <animate attributeName="opacity" values="0.4;0.1;0.4" dur="2s" repeatCount="indefinite" begin={`${i * 0.3}s`} />
+                            </circle>
+                        )}
+                        {/* Solid node */}
+                        <circle
+                            cx={p.x}
+                            cy={p.y}
+                            r={score > 0 ? 3 : 2}
+                            fill={score > 0 ? color : 'rgba(255,255,255,0.15)'}
+                            stroke={score > 0 ? 'white' : 'transparent'}
+                            strokeWidth="0.8"
+                            filter={score > 0 ? 'url(#nodeGlow)' : undefined}
+                        >
+                            {score > 0 && <animate attributeName="r" values="2.5;3.5;2.5" dur="2.5s" repeatCount="indefinite" begin={`${i * 0.25}s`} />}
+                        </circle>
+                    </g>
+                );
+            })}
+
+            {/* Center dot */}
+            <circle cx={cx} cy={cy} r="2" fill="#ff2d20" opacity="0.6">
+                {hasData && <animate attributeName="r" values="1.5;3;1.5" dur="2s" repeatCount="indefinite" />}
+                {hasData && <animate attributeName="opacity" values="0.4;0.8;0.4" dur="2s" repeatCount="indefinite" />}
+            </circle>
+
+            {/* Dimension labels */}
+            {dimensions.map((dim, i) => {
+                const p = toPoint(i, 125);
                 return (
                     <text
                         key={dim}
@@ -330,7 +577,8 @@ function RiasecRadar({ scores }: { scores: Record<Dimension, number> }) {
                         dominantBaseline="middle"
                         fill={dimensionColors[dim]}
                         fontSize="10"
-                        fontWeight="600"
+                        fontWeight="700"
+                        style={{ textShadow: `0 0 6px ${dimensionColors[dim]}60` }}
                     >
                         {dim[0]}
                     </text>

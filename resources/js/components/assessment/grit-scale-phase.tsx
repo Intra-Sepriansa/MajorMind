@@ -64,8 +64,64 @@ export function GritScalePhase({ answers, onAnswersChange, onContinue, onBack }:
         onAnswersChange({ ...answers, [questionId]: value });
     };
 
+    const [isCompleting, setIsCompleting] = useState(false);
+
+    const handleContinue = () => {
+        setIsCompleting(true);
+        setTimeout(() => {
+            onContinue();
+        }, 3000);
+    };
+
     return (
-        <div className="space-y-6">
+        <div className="relative space-y-6">
+            {/* Advanced Completion Animation Overlay */}
+            {isCompleting && (
+                <div className="absolute inset-0 z-50 flex flex-col items-center justify-center rounded-[28px] bg-[#000000]/80 backdrop-blur-xl transition-all duration-500">
+                    <style>
+                        {`
+                        @keyframes pulse-ring {
+                            0% { transform: scale(0.8); opacity: 0.5; }
+                            50% { opacity: 1; }
+                            100% { transform: scale(1.2); opacity: 0; }
+                        }
+                        .animate-pulse-ring {
+                            animation: pulse-ring 2s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+                        }
+                        `}
+                    </style>
+                    <div className="relative flex h-40 w-40 items-center justify-center">
+                        <div className="absolute inset-0 animate-pulse-ring rounded-full border-2 border-blue-500" />
+                        <div className="absolute inset-4 rounded-full border border-dashed border-white/20 animate-[spin_5s_linear_infinite]" />
+                        <div className="absolute inset-2 rounded-full border-t-2 border-r-2 border-purple-500 animate-[spin_2s_linear_infinite]" />
+                        <div className="absolute inset-8 rounded-full border-b-2 border-blue-400 animate-[spin_3s_linear_infinite_reverse]" />
+                        
+                        <div className="z-10 flex h-20 w-20 items-center justify-center rounded-full bg-black shadow-[0_0_30px_rgba(59,130,246,0.4)] ring-1 ring-white/20">
+                            <Shield className="h-10 w-10 text-white animate-pulse" />
+                        </div>
+                    </div>
+                    
+                    <div className="mt-10 space-y-3 text-center">
+                        <div className="text-xl font-bold tracking-[0.2em] text-white uppercase" style={{ fontFamily: '"Space Grotesk", var(--font-sans)' }}>
+                            Mengkalkulasi Grit Score
+                        </div>
+                        <div className="text-sm tracking-wide text-slate-400 animate-pulse">
+                            Menganalisis Ketekunan & Konsistensi...
+                        </div>
+                    </div>
+
+                    {/* Matrix Processing Effect */}
+                    <div className="mt-8 flex gap-3">
+                        <div className="h-12 w-20 overflow-hidden rounded-xl border border-blue-500/30 bg-blue-500/10 p-2">
+                            <div className="h-full w-full bg-blue-500 shadow-[0_0_15px_rgba(59,130,246,0.8)]" style={{ animation: 'bounce 1s infinite alternate' }} />
+                        </div>
+                        <div className="h-12 w-20 overflow-hidden rounded-xl border border-purple-500/30 bg-purple-500/10 p-2">
+                            <div className="h-full w-full bg-purple-500 shadow-[0_0_15px_rgba(168,85,247,0.8)]" style={{ animation: 'bounce 1s infinite alternate-reverse' }} />
+                        </div>
+                    </div>
+                </div>
+            )}
+
             {/* Header */}
             <Card className="rounded-[28px] border-white/10 bg-[#000000]/82 py-0">
                 <CardContent className="px-6 py-5">
@@ -218,17 +274,18 @@ export function GritScalePhase({ answers, onAnswersChange, onContinue, onBack }:
                     variant="outline"
                     onClick={onBack}
                     className="h-11 rounded-xl border-white/10 bg-transparent text-slate-300 hover:bg-white/[0.04] hover:text-white"
+                    disabled={isCompleting}
                 >
                     <ArrowLeft className="mr-2 h-4 w-4" />
                     Kembali ke RIASEC
                 </Button>
                 <Button
-                    onClick={onContinue}
-                    disabled={!allAnswered}
+                    onClick={handleContinue}
+                    disabled={!allAnswered || isCompleting}
                     className="h-11 rounded-xl bg-[#ff2d20] px-6 font-semibold text-white shadow-[0_0_16px_rgba(255,45,32,0.3)] transition-all hover:bg-[#ff584d] disabled:opacity-40 disabled:shadow-none"
                 >
-                    Lanjut ke Logic Test
-                    <ArrowRight className="ml-2 h-4 w-4" />
+                    {isCompleting ? 'Menganalisis Grit...' : 'Lanjut ke Logic Test'}
+                    {!isCompleting && <ArrowRight className="ml-2 h-4 w-4" />}
                 </Button>
             </div>
         </div>

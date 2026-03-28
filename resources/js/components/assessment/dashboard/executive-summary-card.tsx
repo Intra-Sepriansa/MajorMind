@@ -16,10 +16,10 @@ type ExecutiveSummaryCardProps = {
 };
 
 function getConsistencyBadge(cr: number) {
-    if (cr < 0.05) return { label: 'Excellent', color: 'emerald' };
-    if (cr < 0.08) return { label: 'Very Good', color: 'blue' };
-    if (cr < 0.1) return { label: 'Good', color: 'amber' };
-    return { label: 'Needs Review', color: 'red' };
+    if (cr < 0.05) return { label: 'Sangat Baik', color: 'emerald' };
+    if (cr < 0.08) return { label: 'Baik', color: 'blue' };
+    if (cr < 0.1) return { label: 'Cukup', color: 'amber' };
+    return { label: 'Perlu Tinjauan', color: 'red' };
 }
 
 export function ExecutiveSummaryCard({
@@ -49,7 +49,7 @@ export function ExecutiveSummaryCard({
             <CardContent className="px-6 py-6">
                 <div className="mb-1 flex items-center gap-2 text-xs tracking-[0.3em] text-slate-500 uppercase">
                     <Award className="h-3.5 w-3.5 text-[#ff2d20]" />
-                    Executive Summary
+                    Ringkasan Eksekutif
                 </div>
 
                 <div className="mt-4 grid gap-5 lg:grid-cols-[1fr_auto]">
@@ -63,7 +63,7 @@ export function ExecutiveSummaryCard({
 
                         <div className="flex flex-wrap items-center gap-2">
                             <span className="rounded-full border border-[#ff2d20]/30 bg-[#ff2d20]/12 px-3 py-1 text-xs font-medium text-[#ffb4ae]">
-                                Match {confidence.toFixed(1)}%
+                                Kecocokan {confidence.toFixed(1)}%
                             </span>
                             <span className={`rounded-full border px-3 py-1 text-xs font-medium ${badgeColors[crBadge.color]}`}>
                                 CR {assessment.consistency_ratio.toFixed(4)} — {crBadge.label}
@@ -79,15 +79,15 @@ export function ExecutiveSummaryCard({
                                     ) : (
                                         <XCircle className="h-3 w-3" />
                                     )}
-                                    {algorithmAgree ? 'Algorithms Agree' : 'Divergence Detected'}
+                                    {algorithmAgree ? 'Keselarasan Algoritma' : 'Terdapat Perbedaan'}
                                 </span>
                             ) : null}
                         </div>
 
                         <p className="max-w-2xl text-sm leading-7 text-slate-400">
                             Skor akhir dihitung menggunakan <span className="text-slate-200">{scoringMethod}</span>.
-                            {' '}TOPSIS score {(topRecommendation.topsis_score * 100).toFixed(1)}% dikombinasikan
-                            dengan Profile Matching {(topRecommendation.behavioral_score * 100).toFixed(1)}%.
+                            {' '}Skor TOPSIS {(topRecommendation.topsis_score * 100).toFixed(1)}% dikombinasikan
+                            dengan Kecocokan Profil {(topRecommendation.behavioral_score * 100).toFixed(1)}%.
                             {sawRank !== null && sawRank === 1 ? (
                                 <> SAW cross-verification <span className="text-emerald-300">mengkonfirmasi</span> posisi #1.</>
                             ) : sawRank !== null ? (
@@ -99,7 +99,7 @@ export function ExecutiveSummaryCard({
                     <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-1 lg:w-48">
                         <div className="rounded-2xl border border-white/8 bg-[#000000] px-4 py-3">
                             <div className="flex items-center gap-1.5 text-[11px] text-slate-500">
-                                <TrendingUp className="h-3 w-3" /> TOPSIS Score
+                                <TrendingUp className="h-3 w-3" /> Skor TOPSIS
                             </div>
                             <div className="mt-1 font-mono text-lg text-white">
                                 {(topRecommendation.topsis_score * 100).toFixed(1)}%
@@ -107,7 +107,7 @@ export function ExecutiveSummaryCard({
                         </div>
                         <div className="rounded-2xl border border-white/8 bg-[#000000] px-4 py-3">
                             <div className="flex items-center gap-1.5 text-[11px] text-slate-500">
-                                <Shield className="h-3 w-3" /> Profile Match
+                                <Shield className="h-3 w-3" /> Kecocokan Profil
                             </div>
                             <div className="mt-1 font-mono text-lg text-white">
                                 {(topRecommendation.behavioral_score * 100).toFixed(1)}%
@@ -115,7 +115,7 @@ export function ExecutiveSummaryCard({
                         </div>
                         <div className="rounded-2xl border border-white/8 bg-[#000000] px-4 py-3">
                             <div className="flex items-center gap-1.5 text-[11px] text-slate-500">
-                                <GitCompare className="h-3 w-3" /> SAW Rank
+                                <GitCompare className="h-3 w-3" /> Peringkat SAW
                             </div>
                             <div className="mt-1 font-mono text-lg text-white">
                                 {sawRank !== null ? `#${sawRank}` : 'N/A'}
@@ -123,9 +123,9 @@ export function ExecutiveSummaryCard({
                         </div>
                         {eliminated > 0 ? (
                             <div className="rounded-2xl border border-white/8 bg-[#000000] px-4 py-3">
-                                <div className="text-[11px] text-slate-500">Eliminated</div>
+                                <div className="text-[11px] text-slate-500">Dieliminasi</div>
                                 <div className="mt-1 font-mono text-lg text-amber-300">
-                                    {eliminated} majors
+                                    {eliminated} jurusan
                                 </div>
                             </div>
                         ) : null}

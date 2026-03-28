@@ -56,8 +56,60 @@ export function AdaptiveLogicPhase({ session, onSessionChange, onContinue, onBac
         }, 1000);
     }, [current, feedback, session, onSessionChange]);
 
+    const [isCompleting, setIsCompleting] = useState(false);
+
+    const handleContinue = () => {
+        setIsCompleting(true);
+        setTimeout(() => {
+            onContinue();
+        }, 3000);
+    };
+
     if (isDone) return (
-        <div className="space-y-6">
+        <div className="relative space-y-6">
+            {/* Advanced Completion Animation Overlay */}
+            {isCompleting && (
+                <div className="absolute inset-0 z-50 flex flex-col items-center justify-center rounded-[28px] bg-[#000000]/80 backdrop-blur-xl transition-all duration-500">
+                    <style>
+                        {`
+                        @keyframes neural-pulse {
+                            0% { transform: scale(0.9); opacity: 0.3; }
+                            50% { transform: scale(1.1); opacity: 1; }
+                            100% { transform: scale(0.9); opacity: 0.3; }
+                        }
+                        .animate-neural-pulse {
+                            animation: neural-pulse 2s ease-in-out infinite;
+                        }
+                        `}
+                    </style>
+                    <div className="relative flex h-40 w-40 items-center justify-center">
+                        <div className="absolute inset-0 animate-neural-pulse rounded-full border border-emerald-500/50" />
+                        <div className="absolute inset-4 rounded-full border border-dashed border-emerald-400/30 animate-[spin_6s_linear_infinite]" />
+                        <div className="absolute inset-2 rounded-full border-t-2 border-r-2 border-[#ff2d20] animate-[spin_3s_linear_infinite]" />
+                        <div className="absolute inset-8 rounded-full border-b-2 border-emerald-400 animate-[spin_2s_linear_infinite_reverse]" />
+                        
+                        <div className="z-10 flex h-20 w-20 items-center justify-center rounded-full bg-black shadow-[0_0_30px_rgba(16,185,129,0.4)] ring-1 ring-emerald-500/20">
+                            <BrainCircuit className="h-10 w-10 text-emerald-400 animate-pulse" />
+                        </div>
+                    </div>
+                    
+                    <div className="mt-10 space-y-3 text-center">
+                        <div className="text-xl font-bold tracking-[0.2em] text-white uppercase" style={{ fontFamily: '"Space Grotesk", var(--font-sans)' }}>
+                            Kalibrasi Kognitif Selesai
+                        </div>
+                        <div className="text-sm tracking-wide text-emerald-400/80 animate-pulse">
+                            Mengekstraksi paramater reliabilitas θ...
+                        </div>
+                    </div>
+
+                    <div className="mt-8 flex gap-2">
+                        {[1, 2, 3, 4, 5].map((item, i) => (
+                            <div key={item} className="h-2 w-2 rounded-full bg-emerald-500" style={{ animation: `neural-pulse 1s ease-in-out ${i * 0.2}s infinite` }} />
+                        ))}
+                    </div>
+                </div>
+            )}
+
             <Card className="rounded-[28px] border-emerald-500/20 bg-[#000000]/82 py-0">
                 <CardContent className="px-6 py-8 text-center">
                     <div className="mb-4 inline-flex h-20 w-20 items-center justify-center rounded-full border-2 border-emerald-500/30 bg-emerald-500/10"><CheckCircle2 className="h-10 w-10 text-emerald-400" /></div>
@@ -71,8 +123,11 @@ export function AdaptiveLogicPhase({ session, onSessionChange, onContinue, onBac
                 </CardContent>
             </Card>
             <div className="flex items-center justify-between pt-2">
-                <Button variant="outline" onClick={onBack} className="h-11 rounded-xl border-white/10 bg-transparent text-slate-300 hover:bg-white/[0.04]"><ArrowLeft className="mr-2 h-4 w-4" />Kembali</Button>
-                <Button onClick={onContinue} className="h-11 rounded-xl bg-[#ff2d20] px-6 font-semibold text-white shadow-[0_0_16px_rgba(255,45,32,0.3)] hover:bg-[#ff584d]">Lanjut ke AHP<ArrowRight className="ml-2 h-4 w-4" /></Button>
+                <Button variant="outline" onClick={onBack} disabled={isCompleting} className="h-11 rounded-xl border-white/10 bg-transparent text-slate-300 hover:bg-white/[0.04]"><ArrowLeft className="mr-2 h-4 w-4" />Kembali</Button>
+                <Button onClick={handleContinue} disabled={isCompleting} className="h-11 rounded-xl bg-[#ff2d20] px-6 font-semibold text-white shadow-[0_0_16px_rgba(255,45,32,0.3)] hover:bg-[#ff584d]">
+                    {isCompleting ? 'Menyimpan Hasil...' : 'Lanjut ke AHP'}
+                    {!isCompleting && <ArrowRight className="ml-2 h-4 w-4" />}
+                </Button>
             </div>
         </div>
     );
@@ -92,7 +147,7 @@ export function AdaptiveLogicPhase({ session, onSessionChange, onContinue, onBac
                             <span className="rounded-lg bg-white/5 px-3 py-1 text-xs font-medium text-slate-300">SE: {session.standard_error < 100 ? session.standard_error.toFixed(2) : '—'}</span>
                         </div>
                     </div>
-                    <div className="mt-3"><div className="mb-1 flex justify-between text-[10px] text-slate-600"><span>Low</span><span className="font-mono text-slate-400">θ = {session.theta.toFixed(2)}</span><span>High</span></div><div className="relative h-2 overflow-hidden rounded-full bg-white/10"><div className="absolute h-full rounded-full bg-gradient-to-r from-blue-500 to-[#ff2d20] transition-all duration-700" style={{ width: `${score}%` }} /></div></div>
+                    <div className="mt-3"><div className="mb-1 flex justify-between text-[10px] text-slate-600"><span>Rendah</span><span className="font-mono text-slate-400">θ = {session.theta.toFixed(2)}</span><span>Tinggi</span></div><div className="relative h-2 overflow-hidden rounded-full bg-white/10"><div className="absolute h-full rounded-full bg-gradient-to-r from-blue-500 to-[#ff2d20] transition-all duration-700" style={{ width: `${score}%` }} /></div></div>
                 </CardContent>
             </Card>
 

@@ -10,11 +10,6 @@ use Illuminate\Database\Eloquent\Factories\Factory;
  */
 class MajorFactory extends Factory
 {
-    /**
-     * Define the model's default state.
-     *
-     * @return array<string, mixed>
-     */
     public function definition(): array
     {
         return [
@@ -28,9 +23,21 @@ class MajorFactory extends Factory
                 'kesiapan_akademik' => fake()->numberBetween(60, 95),
             ],
             'behavioral_profile' => [
-                'minat' => fake()->numberBetween(60, 95),
-                'logika' => fake()->numberBetween(60, 95),
-                'konsistensi' => fake()->numberBetween(60, 95),
+                'minat_stem' => fake()->numberBetween(20, 95),
+                'minat_seni' => fake()->numberBetween(20, 95),
+                'minat_sosial' => fake()->numberBetween(20, 95),
+                'keteraturan' => fake()->numberBetween(40, 95),
+                'daya_juang' => fake()->numberBetween(40, 95),
+                'konsistensi' => fake()->numberBetween(40, 95),
+                'logika' => fake()->numberBetween(40, 95),
+            ],
+            'riasec_profile' => [
+                'R' => fake()->numberBetween(20, 90),
+                'I' => fake()->numberBetween(20, 90),
+                'A' => fake()->numberBetween(20, 90),
+                'S' => fake()->numberBetween(20, 90),
+                'E' => fake()->numberBetween(20, 90),
+                'C' => fake()->numberBetween(20, 90),
             ],
             'is_active' => true,
         ];

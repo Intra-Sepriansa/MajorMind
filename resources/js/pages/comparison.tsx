@@ -1,4 +1,5 @@
 import { Head } from '@inertiajs/react';
+import ComparisonHeader3D from '@/components/comparison/comparison-header-3d';
 import SpiderChart from '@/components/comparison/spider-chart';
 import AlgorithmBreakdown from '@/components/comparison/algorithm-breakdown';
 import ParetoFrontier from '@/components/comparison/pareto-frontier';
@@ -532,22 +533,25 @@ export default function ComparisonPage({
             <Head title="Comparison" />
 
             <div ref={scrollRef} className="scroll-reveal-container space-y-6 bg-[#0b0e14] px-4 py-6 text-white lg:px-6">
-                <section className="rounded-[32px] border border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.04),rgba(255,255,255,0.02))] p-6">
-                    <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.04] px-4 py-2 text-xs tracking-[0.28em] text-slate-300 uppercase">
-                        <GitCompareArrows className="h-3.5 w-3.5 text-[#ff2d20]" />
-                        Comparison Engine
-                    </div>
-                    <div className="mt-4 flex flex-col gap-4 xl:flex-row xl:items-end xl:justify-between">
-                        <div>
-                            <h1 className="text-4xl font-semibold tracking-[-0.05em]">
-                                Multi-mode decision comparison engine.
-                            </h1>
-                            <p className="mt-3 max-w-4xl text-sm leading-7 text-slate-400">
-                                Comparison sekarang mendukung `baseline vs scenario`
-                                dan `scenario vs scenario`, lengkap dengan rank flow
-                                chart, explainability, diagnostic movement table,
-                                dan export PDF untuk kebutuhan sidang atau presentasi.
-                            </p>
+                <section className="relative overflow-hidden rounded-[32px] border border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.04),rgba(255,255,255,0.02))] p-6">
+                    <ComparisonHeader3D />
+                    <div className="relative z-10">
+                        <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.04] px-4 py-2 text-xs tracking-[0.28em] text-slate-300 uppercase">
+                            <GitCompareArrows className="h-3.5 w-3.5 text-[#ff2d20]" />
+                            Comparison Engine
+                        </div>
+                        <div className="mt-4 flex flex-col gap-4 xl:flex-row xl:items-end xl:justify-between">
+                            <div>
+                                <h1 className="text-4xl font-semibold tracking-[-0.05em]">
+                                    Multi-mode decision comparison engine.
+                                </h1>
+                                <p className="mt-3 max-w-4xl text-sm leading-7 text-slate-400">
+                                    Comparison sekarang mendukung `baseline vs scenario`
+                                    dan `scenario vs scenario`, lengkap dengan rank flow
+                                    chart, explainability, diagnostic movement table,
+                                    dan export PDF untuk kebutuhan sidang atau presentasi.
+                                </p>
+                            </div>
                         </div>
                     </div>
                 </section>

@@ -24,7 +24,7 @@ class AdaptiveLogicTest
      * @var list<array{id: string, difficulty: float, discrimination: float, guessing: float, type: string, question: string, options: array<string, string>, correct: string}>
      */
     private array $itemBank = [
-        // Easy (b = −1.5 to −0.5)
+        // ═══ Easy (b = −1.5 to −0.5) — 5 items ═══
         [
             'id' => 'L1', 'difficulty' => -1.2, 'discrimination' => 1.0, 'guessing' => 0.25,
             'type' => 'pattern',
@@ -46,8 +46,22 @@ class AdaptiveLogicTest
             'options' => ['A' => '4', 'B' => '6', 'C' => '8', 'D' => '12'],
             'correct' => 'B',
         ],
+        [
+            'id' => 'L14', 'difficulty' => -1.3, 'discrimination' => 0.8, 'guessing' => 0.25,
+            'type' => 'verbal_reasoning',
+            'question' => 'Manakah kata yang TIDAK termasuk kelompok? Apel, Jeruk, Kentang, Mangga',
+            'options' => ['A' => 'Apel', 'B' => 'Jeruk', 'C' => 'Kentang', 'D' => 'Mangga'],
+            'correct' => 'C',
+        ],
+        [
+            'id' => 'L15', 'difficulty' => -0.6, 'discrimination' => 1.0, 'guessing' => 0.25,
+            'type' => 'numerical_reasoning',
+            'question' => 'Jika harga barang Rp80.000 didiskon 25%, berapa harga akhirnya?',
+            'options' => ['A' => 'Rp55.000', 'B' => 'Rp60.000', 'C' => 'Rp65.000', 'D' => 'Rp70.000'],
+            'correct' => 'B',
+        ],
 
-        // Medium (b = −0.5 to 0.5)
+        // ═══ Medium (b = −0.5 to 0.5) — 8 items ═══
         [
             'id' => 'L4', 'difficulty' => -0.3, 'discrimination' => 1.2, 'guessing' => 0.20,
             'type' => 'pattern',
@@ -76,8 +90,36 @@ class AdaptiveLogicTest
             'options' => ['A' => '1', 'B' => '2', 'C' => '4', 'D' => '8'],
             'correct' => 'C',
         ],
+        [
+            'id' => 'L16', 'difficulty' => -0.1, 'discrimination' => 1.3, 'guessing' => 0.20,
+            'type' => 'verbal_reasoning',
+            'question' => 'Guru : Murid = Dokter : ...?',
+            'options' => ['A' => 'Rumah Sakit', 'B' => 'Obat', 'C' => 'Pasien', 'D' => 'Stetoskop'],
+            'correct' => 'C',
+        ],
+        [
+            'id' => 'L17', 'difficulty' => 0.1, 'discrimination' => 1.2, 'guessing' => 0.20,
+            'type' => 'data_interpretation',
+            'question' => 'Dari 200 siswa, 40% suka Matematika, 35% suka IPA, sisanya suka Bahasa. Berapa siswa yang suka Bahasa?',
+            'options' => ['A' => '40', 'B' => '50', 'C' => '60', 'D' => '70'],
+            'correct' => 'B',
+        ],
+        [
+            'id' => 'L18', 'difficulty' => 0.3, 'discrimination' => 1.4, 'guessing' => 0.20,
+            'type' => 'logical_deduction',
+            'question' => 'Semua mahasiswa rajin. Beberapa mahasiswa adalah atlet. Kesimpulannya?',
+            'options' => ['A' => 'Semua atlet rajin', 'B' => 'Beberapa atlet rajin', 'C' => 'Semua orang rajin adalah mahasiswa', 'D' => 'Tidak ada atlet yang rajin'],
+            'correct' => 'B',
+        ],
+        [
+            'id' => 'L19', 'difficulty' => 0.5, 'discrimination' => 1.3, 'guessing' => 0.20,
+            'type' => 'numerical_reasoning',
+            'question' => 'Sebuah mobil menempuh 150 km dalam 2,5 jam. Berapa kecepatan rata-ratanya?',
+            'options' => ['A' => '50 km/jam', 'B' => '55 km/jam', 'C' => '60 km/jam', 'D' => '65 km/jam'],
+            'correct' => 'C',
+        ],
 
-        // Hard (b = 0.5 to 1.5)
+        // ═══ Hard (b = 0.5 to 1.5) — 7 items ═══
         [
             'id' => 'L8', 'difficulty' => 0.7, 'discrimination' => 1.5, 'guessing' => 0.15,
             'type' => 'matrix',
@@ -99,8 +141,36 @@ class AdaptiveLogicTest
             'options' => ['A' => 'Rabu', 'B' => 'Kamis', 'C' => 'Jumat', 'D' => 'Sabtu'],
             'correct' => 'B',
         ],
+        [
+            'id' => 'L20', 'difficulty' => 0.8, 'discrimination' => 1.5, 'guessing' => 0.15,
+            'type' => 'data_interpretation',
+            'question' => 'Rata-rata nilai 5 siswa adalah 72. Jika satu siswa bernilai 60 dikeluarkan, rata-rata 4 siswa sisanya?',
+            'options' => ['A' => '73', 'B' => '75', 'C' => '76', 'D' => '78'],
+            'correct' => 'B',
+        ],
+        [
+            'id' => 'L21', 'difficulty' => 1.1, 'discrimination' => 1.5, 'guessing' => 0.15,
+            'type' => 'logical_deduction',
+            'question' => 'P menghasilkan Q. Q menghasilkan R. R menghasilkan S. Jika P salah, manakah yang pasti benar?',
+            'options' => ['A' => 'S pasti salah', 'B' => 'Q mungkin benar', 'C' => 'Tidak bisa disimpulkan tentang Q', 'D' => 'R pasti benar'],
+            'correct' => 'C',
+        ],
+        [
+            'id' => 'L22', 'difficulty' => 1.2, 'discrimination' => 1.4, 'guessing' => 0.15,
+            'type' => 'numerical_reasoning',
+            'question' => 'Suatu pinjaman Rp10.000.000 dengan bunga sederhana 12% per tahun. Berapa total yang harus dibayar setelah 2 tahun?',
+            'options' => ['A' => 'Rp12.000.000', 'B' => 'Rp12.400.000', 'C' => 'Rp12.544.000', 'D' => 'Rp14.000.000'],
+            'correct' => 'B',
+        ],
+        [
+            'id' => 'L23', 'difficulty' => 1.4, 'discrimination' => 1.6, 'guessing' => 0.15,
+            'type' => 'critical_thinking',
+            'question' => '"Semua orang yang lulus ujian X adalah cerdas. Andi tidak lulus ujian X." Manakah kesimpulan yang benar?',
+            'options' => ['A' => 'Andi tidak cerdas', 'B' => 'Andi cerdas', 'C' => 'Tidak dapat ditentukan apakah Andi cerdas', 'D' => 'Andi akan gagal ujian lain'],
+            'correct' => 'C',
+        ],
 
-        // Very hard (b = 1.5 to 2.5)
+        // ═══ Very hard (b = 1.5 to 2.5) — 5 items ═══
         [
             'id' => 'L11', 'difficulty' => 1.7, 'discrimination' => 1.7, 'guessing' => 0.10,
             'type' => 'advanced_matrix',
@@ -121,6 +191,20 @@ class AdaptiveLogicTest
             'question' => 'Sebuah bola berada di dalam kubus dengan sisi 10 cm. Berapa volume kubus yang TIDAK ditempati bola (π≈3.14)?',
             'options' => ['A' => '476.67 cm³', 'B' => '523.33 cm³', 'C' => '477.33 cm³', 'D' => '500 cm³'],
             'correct' => 'B',
+        ],
+        [
+            'id' => 'L24', 'difficulty' => 1.8, 'discrimination' => 1.7, 'guessing' => 0.10,
+            'type' => 'data_interpretation',
+            'question' => 'Perusahaan tumbuh 20% di tahun 1 dan turun 20% di tahun 2. Jika pendapatan awal Rp100jt, berapa setelah 2 tahun?',
+            'options' => ['A' => 'Rp100jt', 'B' => 'Rp96jt', 'C' => 'Rp98jt', 'D' => 'Rp104jt'],
+            'correct' => 'B',
+        ],
+        [
+            'id' => 'L25', 'difficulty' => 2.1, 'discrimination' => 1.8, 'guessing' => 0.10,
+            'type' => 'critical_thinking',
+            'question' => '5 mesin menghasilkan 5 produk dalam 5 menit. Berapa menit yang dibutuhkan 100 mesin untuk menghasilkan 100 produk?',
+            'options' => ['A' => '5 menit', 'B' => '100 menit', 'C' => '20 menit', 'D' => '500 menit'],
+            'correct' => 'A',
         ],
     ];
 

@@ -1,4 +1,5 @@
 import { Head } from '@inertiajs/react';
+import InsightHeader3D from '@/components/insight/insight-header-3d';
 import AlgorithmicIntelligence from '@/components/insight/algorithmic-intelligence';
 import PsychometricValidation from '@/components/insight/psychometric-validation';
 import EvidenceJustification from '@/components/insight/evidence-justification';
@@ -262,39 +263,42 @@ export default function InsightsPage({
             <Head title="Insights" />
 
             <div ref={scrollRef} className="scroll-reveal-container space-y-6 bg-[#0b0e14] px-4 py-6 text-white lg:px-6">
-                <section className="rounded-[32px] border border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.04),rgba(255,255,255,0.02))] p-6">
-                    <div className="flex items-center justify-between">
-                        <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.04] px-4 py-2 text-xs tracking-[0.28em] text-slate-300 uppercase">
-                            <BookOpenText className="h-3.5 w-3.5 text-[#ff2d20]" />
-                            Explainability Insights
+                <section className="relative overflow-hidden rounded-[32px] border border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.04),rgba(255,255,255,0.02))] p-6">
+                    <InsightHeader3D />
+                    <div className="relative z-10">
+                        <div className="flex items-center justify-between">
+                            <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.04] px-4 py-2 text-xs tracking-[0.28em] text-slate-300 uppercase">
+                                <BookOpenText className="h-3.5 w-3.5 text-[#ff2d20]" />
+                                Explainability Insights
+                            </div>
+                            {initialAssessment && (
+                                <button
+                                    onClick={() => {
+                                        window.location.href = `/insight/${initialAssessment.id}/export-pdf`;
+                                    }}
+                                    className="inline-flex items-center gap-2 rounded-full border border-[#ff2d20]/30 bg-[#ff2d20]/10 px-4 py-2 text-xs font-semibold text-[#ff2d20] transition hover:bg-[#ff2d20]/20"
+                                >
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-file-down">
+                                        <path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/>
+                                        <path d="M14 2v4a2 2 0 0 0 2 2h4"/>
+                                        <path d="M12 18v-6"/>
+                                        <path d="m9 15 3 3 3-3"/>
+                                    </svg>
+                                    Export PDF
+                                </button>
+                            )}
                         </div>
-                        {initialAssessment && (
-                            <button
-                                onClick={() => {
-                                    window.location.href = `/insight/${initialAssessment.id}/export-pdf`;
-                                }}
-                                className="inline-flex items-center gap-2 rounded-full border border-[#ff2d20]/30 bg-[#ff2d20]/10 px-4 py-2 text-xs font-semibold text-[#ff2d20] transition hover:bg-[#ff2d20]/20"
-                            >
-                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-file-down">
-                                    <path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/>
-                                    <path d="M14 2v4a2 2 0 0 0 2 2h4"/>
-                                    <path d="M12 18v-6"/>
-                                    <path d="m9 15 3 3 3-3"/>
-                                </svg>
-                                Export PDF
-                            </button>
-                        )}
+                        <h1 className="mt-4 text-4xl font-semibold tracking-[-0.05em]">
+                            Interpretasi keputusan yang dapat dijelaskan, diaudit, dan dipresentasikan.
+                        </h1>
+                        <p className="mt-3 max-w-4xl text-sm leading-7 text-slate-400">
+                            Menu ini menerjemahkan output assessment menjadi justifikasi keputusan.
+                            Fokusnya bukan hanya siapa yang berada di posisi pertama, tetapi
+                            mengapa alternatif tersebut unggul, kriteria apa yang paling
+                            dominan, seberapa stabil keputusan, dan bagaimana hasil ini dapat
+                            dipertahankan secara akademik.
+                        </p>
                     </div>
-                    <h1 className="mt-4 text-4xl font-semibold tracking-[-0.05em]">
-                        Interpretasi keputusan yang dapat dijelaskan, diaudit, dan dipresentasikan.
-                    </h1>
-                    <p className="mt-3 max-w-4xl text-sm leading-7 text-slate-400">
-                        Menu ini menerjemahkan output assessment menjadi justifikasi keputusan.
-                        Fokusnya bukan hanya siapa yang berada di posisi pertama, tetapi
-                        mengapa alternatif tersebut unggul, kriteria apa yang paling
-                        dominan, seberapa stabil keputusan, dan bagaimana hasil ini dapat
-                        dipertahankan secara akademik.
-                    </p>
                 </section>
 
                 <section className="grid gap-6 md:grid-cols-2 xl:grid-cols-4">

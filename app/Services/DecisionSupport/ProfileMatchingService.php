@@ -3,11 +3,10 @@
 namespace App\Services\DecisionSupport;
 
 /**
- * Profile Matching (Gap Analysis) Service
+ * Profile Matching (Gap Analysis) Service — 7-Dimension System
  *
- * Replaces raw Euclidean distance with a psychometric-grade
- * Gap Competence Analysis using Core Factor (60%) and
- * Secondary Factor (40%) weighting.
+ * Uses psychometric-grade Gap Competence Analysis with
+ * Core Factor (60%) and Secondary Factor (40%) weighting.
  *
  * @see https://doi.org/10.1016/j.eswa.2012.05.028
  */
@@ -36,7 +35,7 @@ class ProfileMatchingService
     ];
 
     /**
-     * Core factor definitions per major cluster.
+     * Core factor definitions per major cluster (7D behavioral dimensions).
      *
      * 'core' dimensions are mandatory competencies (weighted 60%).
      * All remaining behavioral dimensions become secondary (weighted 40%).
@@ -44,65 +43,65 @@ class ProfileMatchingService
      * @var array<string, string[]>
      */
     private const CORE_FACTORS = [
-        // KEDOKTERAN & KESEHATAN — konsistensi is paramount
-        'kedokteran-umum' => ['konsistensi', 'minat'],
-        'kedokteran-gigi' => ['konsistensi', 'minat'],
-        'farmasi' => ['konsistensi', 'logika'],
-        'ilmu-keperawatan' => ['konsistensi', 'minat'],
-        'kesehatan-masyarakat' => ['konsistensi'],
-        'gizi' => ['konsistensi', 'minat'],
+        // ═══ KEDOKTERAN & KESEHATAN — daya_juang + konsistensi paramount
+        'kedokteran-umum' => ['daya_juang', 'konsistensi', 'minat_sosial'],
+        'kedokteran-gigi' => ['daya_juang', 'konsistensi', 'minat_stem'],
+        'farmasi' => ['konsistensi', 'logika', 'keteraturan'],
+        'ilmu-keperawatan' => ['minat_sosial', 'daya_juang', 'konsistensi'],
+        'kesehatan-masyarakat' => ['minat_sosial', 'konsistensi'],
+        'gizi' => ['minat_sosial', 'konsistensi', 'keteraturan'],
 
-        // TEKNIK & ILMU KOMPUTER — logika is paramount
-        'teknik-informatika' => ['logika', 'minat'],
-        'sistem-informasi' => ['logika', 'konsistensi'],
-        'teknik-industri' => ['logika', 'konsistensi'],
-        'teknik-sipil' => ['logika', 'konsistensi'],
-        'teknik-mesin' => ['logika'],
-        'teknik-elektro' => ['logika'],
-        'arsitektur' => ['minat', 'konsistensi'],
+        // ═══ TEKNIK & ILMU KOMPUTER — logika + minat_stem paramount
+        'teknik-informatika' => ['logika', 'minat_stem', 'daya_juang'],
+        'sistem-informasi' => ['logika', 'keteraturan', 'minat_stem'],
+        'teknik-industri' => ['logika', 'keteraturan', 'minat_stem'],
+        'teknik-sipil' => ['logika', 'minat_stem', 'konsistensi'],
+        'teknik-mesin' => ['logika', 'minat_stem', 'daya_juang'],
+        'teknik-elektro' => ['logika', 'minat_stem', 'daya_juang'],
+        'arsitektur' => ['minat_seni', 'minat_stem', 'konsistensi'],
 
-        // MIPA — logika is paramount
-        'matematika' => ['logika'],
-        'statistika' => ['logika', 'konsistensi'],
-        'aktuaria' => ['logika', 'konsistensi'],
-        'bioteknologi' => ['logika', 'konsistensi'],
+        // ═══ MIPA — logika paramount
+        'matematika' => ['logika', 'minat_stem', 'daya_juang'],
+        'statistika' => ['logika', 'keteraturan', 'minat_stem'],
+        'aktuaria' => ['logika', 'keteraturan', 'konsistensi'],
+        'bioteknologi' => ['minat_stem', 'logika', 'konsistensi'],
 
-        // EKONOMI & BISNIS
-        'manajemen' => ['minat', 'konsistensi'],
-        'akuntansi' => ['konsistensi', 'logika'],
-        'ilmu-ekonomi' => ['logika', 'konsistensi'],
-        'bisnis-digital' => ['minat'],
+        // ═══ EKONOMI & BISNIS
+        'manajemen' => ['minat_sosial', 'daya_juang', 'konsistensi'],
+        'akuntansi' => ['keteraturan', 'konsistensi', 'logika'],
+        'ilmu-ekonomi' => ['logika', 'konsistensi', 'minat_sosial'],
+        'bisnis-digital' => ['minat_sosial', 'daya_juang', 'minat_stem'],
 
-        // HUKUM & SOSIAL POLITIK
-        'ilmu-hukum' => ['logika', 'konsistensi'],
-        'ilmu-komunikasi' => ['minat'],
-        'hubungan-internasional' => ['minat'],
-        'ilmu-politik' => ['minat'],
-        'kriminologi' => ['logika', 'minat'],
-        'sosiologi' => ['minat'],
+        // ═══ HUKUM & SOSIAL POLITIK
+        'ilmu-hukum' => ['logika', 'konsistensi', 'keteraturan'],
+        'ilmu-komunikasi' => ['minat_sosial', 'minat_seni'],
+        'hubungan-internasional' => ['minat_sosial', 'daya_juang'],
+        'ilmu-politik' => ['minat_sosial', 'daya_juang'],
+        'kriminologi' => ['logika', 'minat_sosial'],
+        'sosiologi' => ['minat_sosial', 'konsistensi'],
 
-        // PSIKOLOGI & HUMANIORA
-        'psikologi' => ['minat', 'konsistensi'],
-        'sastra-inggris' => ['minat'],
-        'ilmu-sejarah' => ['minat', 'konsistensi'],
-        'desain-komunikasi-visual' => ['minat'],
+        // ═══ PSIKOLOGI & HUMANIORA
+        'psikologi' => ['minat_sosial', 'konsistensi', 'logika'],
+        'sastra-inggris' => ['minat_seni', 'konsistensi'],
+        'ilmu-sejarah' => ['konsistensi', 'daya_juang', 'minat_seni'],
+        'desain-komunikasi-visual' => ['minat_seni', 'daya_juang'],
 
-        // PERTANIAN & AGROTEK
-        'agribisnis' => ['konsistensi'],
-        'agroteknologi' => ['konsistensi'],
-        'ilmu-kehutanan' => ['minat', 'konsistensi'],
+        // ═══ PERTANIAN & AGROTEK
+        'agribisnis' => ['konsistensi', 'minat_sosial'],
+        'agroteknologi' => ['minat_stem', 'konsistensi', 'daya_juang'],
+        'ilmu-kehutanan' => ['daya_juang', 'konsistensi', 'minat_stem'],
 
-        // PENDIDIKAN
-        'pgsd' => ['minat', 'konsistensi'],
-        'pendidikan-bahasa-inggris' => ['minat', 'konsistensi'],
-        'pendidikan-matematika' => ['logika', 'konsistensi'],
+        // ═══ PENDIDIKAN
+        'pgsd' => ['minat_sosial', 'daya_juang', 'konsistensi'],
+        'pendidikan-bahasa-inggris' => ['minat_sosial', 'minat_seni', 'konsistensi'],
+        'pendidikan-matematika' => ['logika', 'minat_sosial', 'konsistensi'],
     ];
 
     /**
      * Calculate Profile Matching score between a student and a major.
      *
-     * @param  array<string, int|float>  $studentProfile  e.g. ['minat' => 75, 'logika' => 80, 'konsistensi' => 60]
-     * @param  array<string, int|float>  $majorProfile    e.g. ['minat' => 88, 'logika' => 92, 'konsistensi' => 82]
+     * @param  array<string, int|float>  $studentProfile  7D behavioral profile
+     * @param  array<string, int|float>  $majorProfile    7D behavioral target
      * @param  string                    $majorSlug       e.g. 'teknik-informatika'
      * @return array{score: float, gaps: array, core_score: float, secondary_score: float}
      */
@@ -124,7 +123,7 @@ class ProfileMatchingService
             ];
         }
 
-        $coreDimensions = self::CORE_FACTORS[$majorSlug] ?? ['minat'];
+        $coreDimensions = self::CORE_FACTORS[$majorSlug] ?? ['logika', 'konsistensi'];
         $gaps = [];
 
         foreach ($dimensions as $dimension) {
@@ -188,6 +187,6 @@ class ProfileMatchingService
      */
     public function getCoreFactors(string $majorSlug): array
     {
-        return self::CORE_FACTORS[$majorSlug] ?? ['minat'];
+        return self::CORE_FACTORS[$majorSlug] ?? ['logika', 'konsistensi'];
     }
 }

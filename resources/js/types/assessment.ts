@@ -33,6 +33,16 @@ export type RecommendationMeta = {
     weighted_scores?: Record<string, number>;
     profile_matching?: ProfileMatchingMeta;
     saw_verification?: SawVerificationMeta;
+    universities?: Array<{
+        id: number;
+        name: string;
+        short_name: string;
+        logo_url: string | null;
+        accreditation: string | null;
+        acceptance_rate: number | null;
+        capacity: number | null;
+        ukt_tier: string | null;
+    }>;
 };
 
 export type Recommendation = {

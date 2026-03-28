@@ -5,7 +5,7 @@ import { useCountUp, useTypewriter } from '@/hooks/use-animations';
 import { motion, useMotionValue, useTransform } from 'framer-motion';
 import { useEffect, useState, useRef, useCallback } from 'react';
 import FloatingParticles from './floating-particles';
-import NeuralMatchingEngine from './neural-matching-engine';
+import NeuralBrain3D from './neural-brain-3d';
 
 const font = { fontFamily: '"Space Grotesk", var(--font-sans)' };
 
@@ -214,8 +214,8 @@ export default function HeroSection({ canRegister = true }: { canRegister?: bool
                         </div>
                     </div>
 
-                    {/* Neural Matching Engine Animation */}
-                    <NeuralMatchingEngine />
+                    {/* 3D Neural Brain Animation */}
+                    <NeuralBrain3D />
                 </div>
 
                 <ScrollIndicator />

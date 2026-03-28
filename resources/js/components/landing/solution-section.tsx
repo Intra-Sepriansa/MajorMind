@@ -1,6 +1,7 @@
 import { BrainCircuit, Radar, ShieldCheck, Zap } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useState, useEffect } from 'react';
+import ParadigmShift3D from './paradigm-shift-3d';
 
 const font = { fontFamily: '"Space Grotesk", var(--font-sans)' };
 
@@ -105,139 +106,9 @@ function ParadigmShiftAnimation() {
                 ))}
             </div>
 
-            {/* Main animation area */}
-            <div className="relative z-10 w-[180px] h-[140px] flex items-center justify-center">
-                {/* Center reference ring (subtle) */}
-                <motion.div
-                    className="absolute w-20 h-20 rounded-full border"
-                    animate={{
-                        borderColor: stage === 1 ? `${stages[1].color}30` : 'transparent',
-                        scale: stage === 1 ? [1, 1.1, 1] : 1,
-                    }}
-                    transition={{ duration: 2, repeat: stage === 1 ? Infinity : 0 }}
-                />
-
-                {/* The 16 dots */}
-                {Array.from({ length: 16 }).map((_, i) => {
-                    const chaosPos = CHAOS_POSITIONS[i];
-                    const gridPos = GRID_POSITIONS[i];
-                    const ringPos = CONVERGE_RING[i];
-
-                    // Pick target based on current stage
-                    const targetX = stage === 0 ? chaosPos.x : stage === 1 ? ringPos.x : gridPos.x;
-                    const targetY = stage === 0 ? chaosPos.y : stage === 1 ? ringPos.y : gridPos.y;
-                    const targetRotate = stage === 0 ? chaosPos.rotation : 0;
-                    const targetScale = stage === 0 ? 0.7 + (i % 3) * 0.3 : 1;
-
-                    return (
-                        <motion.div
-                            key={i}
-                            className="absolute rounded-full"
-                            style={{
-                                width: stage === 2 ? 8 : 7,
-                                height: stage === 2 ? 8 : 7,
-                                left: '50%',
-                                top: '50%',
-                                marginLeft: -4,
-                                marginTop: -4,
-                            }}
-                            animate={{
-                                x: targetX,
-                                y: targetY,
-                                rotate: targetRotate,
-                                scale: targetScale,
-                                backgroundColor: stages[stage].color,
-                                boxShadow: stage === 2
-                                    ? `0 0 8px ${stages[2].color}60`
-                                    : stage === 1
-                                    ? `0 0 6px ${stages[1].color}40`
-                                    : `0 0 4px ${stages[0].color}30`,
-                            }}
-                            transition={{
-                                duration: 1,
-                                delay: stage === 0 ? chaosPos.delay : i * 0.03,
-                                ease: [0.34, 1.56, 0.64, 1], // Spring-like overshoot
-                                backgroundColor: { duration: 0.6 },
-                                boxShadow: { duration: 0.6 },
-                            }}
-                        />
-                    );
-                })}
-
-                {/* Chaos: additional scattered particles (small, fading) */}
-                <AnimatePresence>
-                    {stage === 0 &&
-                        Array.from({ length: 6 }).map((_, i) => (
-                            <motion.div
-                                key={`spark-${i}`}
-                                className="absolute w-1 h-1 rounded-full bg-red-400/50"
-                                style={{ left: '50%', top: '50%' }}
-                                initial={{ opacity: 0, scale: 0 }}
-                                animate={{
-                                    opacity: [0, 0.6, 0],
-                                    scale: [0, 1.5, 0],
-                                    x: Math.cos(i * 1.05) * 55,
-                                    y: Math.sin(i * 1.05) * 50,
-                                }}
-                                exit={{ opacity: 0, scale: 0 }}
-                                transition={{ duration: 2.5, repeat: Infinity, delay: i * 0.4, ease: 'easeOut' }}
-                            />
-                        ))}
-                </AnimatePresence>
-
-                {/* Processing: scanning line */}
-                <AnimatePresence>
-                    {stage === 1 && (
-                        <motion.div
-                            className="absolute w-full h-px left-0"
-                            style={{ top: '50%', background: `linear-gradient(90deg, transparent, ${stages[1].color}80, transparent)` }}
-                            initial={{ scaleX: 0, opacity: 0 }}
-                            animate={{ scaleX: 1, opacity: [0, 1, 0] }}
-                            exit={{ opacity: 0 }}
-                            transition={{ duration: 1.5, repeat: Infinity, ease: 'easeInOut' }}
-                        />
-                    )}
-                </AnimatePresence>
-
-                {/* Order: grid lines */}
-                <AnimatePresence>
-                    {stage === 2 && (
-                        <>
-                            {/* Horizontal lines */}
-                            {[0, 1, 2, 3].map((r) => (
-                                <motion.div
-                                    key={`h-${r}`}
-                                    className="absolute h-px left-1/2 -translate-x-1/2"
-                                    style={{
-                                        top: `calc(50% + ${r * 22 - 33}px)`,
-                                        width: 70,
-                                        background: `${stages[2].color}15`,
-                                    }}
-                                    initial={{ scaleX: 0, opacity: 0 }}
-                                    animate={{ scaleX: 1, opacity: 1 }}
-                                    exit={{ scaleX: 0, opacity: 0 }}
-                                    transition={{ duration: 0.4, delay: r * 0.05 }}
-                                />
-                            ))}
-                            {/* Vertical lines */}
-                            {[0, 1, 2, 3].map((c) => (
-                                <motion.div
-                                    key={`v-${c}`}
-                                    className="absolute w-px top-1/2 -translate-y-1/2"
-                                    style={{
-                                        left: `calc(50% + ${c * 22 - 33}px)`,
-                                        height: 70,
-                                        background: `${stages[2].color}15`,
-                                    }}
-                                    initial={{ scaleY: 0, opacity: 0 }}
-                                    animate={{ scaleY: 1, opacity: 1 }}
-                                    exit={{ scaleY: 0, opacity: 0 }}
-                                    transition={{ duration: 0.4, delay: c * 0.05 }}
-                                />
-                            ))}
-                        </>
-                    )}
-                </AnimatePresence>
+            {/* Main 3D Particle Animation */}
+            <div className="relative z-10 w-full max-w-[400px] h-[220px] mx-auto flex items-center justify-center">
+                <ParadigmShift3D stage={stage} />
             </div>
 
             {/* Description */}
