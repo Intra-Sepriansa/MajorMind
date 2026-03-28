@@ -75,16 +75,11 @@ export function initializeTheme(): void {
         return;
     }
 
-    if (!localStorage.getItem('appearance')) {
-        localStorage.setItem('appearance', 'system');
-        setCookie('appearance', 'system');
-    }
-
-    currentAppearance = getStoredAppearance();
-    applyTheme(currentAppearance);
-
-    // Set up system theme change listener
-    mediaQuery()?.addEventListener('change', handleSystemThemeChange);
+    // Force dark mode — MajorMind uses a single unified dark theme
+    localStorage.setItem('appearance', 'dark');
+    setCookie('appearance', 'dark');
+    currentAppearance = 'dark';
+    applyTheme('dark');
 }
 
 export function useAppearance(): UseAppearanceReturn {
