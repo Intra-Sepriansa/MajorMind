@@ -4,7 +4,6 @@ import { UserCircle, Shield, Paintbrush, ChevronRight } from 'lucide-react';
 import Heading from '@/components/heading';
 import { useCurrentUrl } from '@/hooks/use-current-url';
 import { cn, toUrl } from '@/lib/utils';
-import { edit as editAppearance } from '@/routes/appearance';
 import { edit } from '@/routes/profile';
 import { edit as editSecurity } from '@/routes/security';
 
@@ -22,13 +21,6 @@ const sidebarNavItems = [
         href: editSecurity(),
         icon: Shield,
         color: '#3b82f6',
-    },
-    {
-        title: 'Appearance',
-        description: 'Theme and display settings',
-        href: editAppearance(),
-        icon: Paintbrush,
-        color: '#a855f7',
     },
 ];
 
